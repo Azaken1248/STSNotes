@@ -1,0 +1,2072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STS FAT</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #569cd6;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #569cd6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #252526;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .topic {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #383838;
+        }
+        .topic:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .topic h3 {
+            color: #9cdcfe;
+            margin-top: 0;
+        }
+        p {
+            margin-bottom: 10px;
+        }
+        pre {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            border: 1px solid #333;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+        }
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #dcdcaa; /* Changed for better contrast on dark pre */
+            font-size: 0.95em;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            margin-bottom: 10px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        strong {
+            color: #6a9955; /* Greenish for emphasis */
+        }
+        .example-title {
+            font-style: italic;
+            color: #c586c0; /* Purple for example titles */
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+            color: #569cd6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Comprehensive Guide to Data Structures and Algorithms</h1>
+
+        <!-- Navigation (Optional but recommended for long page) -->
+        <!-- You can add a <nav> element here with links to section IDs -->
+
+        <div class="section" id="linked-lists-stacks-queues">
+            <h2 class="section-title">Linked Lists, Stacks & Queues</h2>
+
+            <div class="topic">
+                <h3>Loop Detection in a Linked List</h3>
+                <p><strong>Concept:</strong> Loop detection in a linked list involves determining if the list contains a cycle, meaning a node in the list points back to a previous node, forming a loop. The most common algorithm is Floyd's Cycle-Finding Algorithm (also known as the "tortoise and hare" algorithm), which uses two pointers moving at different speeds.</p>
+                <p class="example-title">Test Example (Floyd's Algorithm):</p>
+                <pre><code>
+Linked List: 1 -> 2 -> 3 -> 4 -> 5
+                        ^         |
+                        |_________| (5 points back to 3)
+
+1. Initialize two pointers, `slow` and `fast`, to the head of the list.
+2. Move `slow` one step at a time (`slow = slow.next`).
+3. Move `fast` two steps at a time (`fast = fast.next.next`).
+4. If `slow` and `fast` meet at some point, a loop is detected.
+5. If `fast` reaches the end of the list (null), there is no loop.
+
+In the example:
+- Iteration 1: slow=2, fast=3
+- Iteration 2: slow=3, fast=5
+- Iteration 3: slow=4, fast=4 (points to 3 then 4) -> Loop detected as slow and fast meet at node 4 (or will meet soon depending on exact node setup).
+   Actually, fast moves to 3 (from 5), then to 4. slow moves to 4. They meet.
+   More precisely:
+   Start: slow=1, fast=1
+   1. slow=2, fast=3
+   2. slow=3, fast=5
+   3. slow=4, fast=4 (5.next is 3, 3.next is 4) -> Meet at 4. Loop detected.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Sort a Bitonic Doubly Linked List (DLL)</h3>
+                <p><strong>Concept:</strong> A bitonic sequence first increases and then decreases, or can be circularly shifted to be so. A bitonic DLL is a Doubly Linked List where the elements form a bitonic sequence. Sorting it involves finding the peak (maximum element, which is the point where the sequence changes from increasing to decreasing), splitting the DLL into two sorted lists (one ascending, one descending), reversing the descending list, and then merging the two sorted lists.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Bitonic DLL: 2 &lt;-> 5 &lt;-> 8 &lt;-> 10 &lt;-> 7 &lt;-> 4 &lt;-> 1 (Peak is 10)
+
+1. <strong>Find the peak:</strong> Traverse to find the node where `node.data > node.next.data`. Here, it's 10.
+2. <strong>Split:</strong>
+   - Ascending part: 2 &lt;-> 5 &lt;-> 8 &lt;-> 10
+   - Descending part: 7 &lt;-> 4 &lt;-> 1 (from 10.next)
+3. <strong>Reverse the descending part:</strong> 1 &lt;-> 4 &lt;-> 7
+4. <strong>Merge the two sorted DLLs:</strong>
+   - Merge (2 &lt;-> 5 &lt;-> 8 &lt;-> 10) and (1 &lt;-> 4 &lt;-> 7)
+   - Result: 1 &lt;-> 2 &lt;-> 4 &lt;-> 5 &lt;-> 7 &lt;-> 8 &lt;-> 10
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Segregate Even and Odd Nodes in a Linked List</h3>
+                <p><strong>Concept:</strong> This problem requires rearranging a linked list so that all even-valued nodes appear before all odd-valued nodes. The relative order of even nodes among themselves and odd nodes among themselves should typically be preserved.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Input Linked List: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+
+1. Create two dummy nodes: `evenHead` and `oddHead`.
+2. Create two pointers: `evenTail` (points to `evenHead`) and `oddTail` (points to `oddHead`).
+3. Traverse the original list:
+   - If a node's value is even, append it to `evenTail`.
+   - If a node's value is odd, append it to `oddTail`.
+4. After traversing, connect the end of the even list (`evenTail.next`) to the beginning of the odd list (`oddHead.next`).
+5. Set the `next` of the last odd node to null.
+6. The new list starts at `evenHead.next`.
+
+Processing:
+- Node 1 (odd): oddList: 1
+- Node 2 (even): evenList: 2
+- Node 3 (odd): oddList: 1 -> 3
+- Node 4 (even): evenList: 2 -> 4
+- Node 5 (odd): oddList: 1 -> 3 -> 5
+- Node 6 (even): evenList: 2 -> 4 -> 6
+
+Connect: evenList (2 -> 4 -> 6) with oddList (1 -> 3 -> 5)
+Output Linked List: 2 -> 4 -> 6 -> 1 -> 3 -> 5
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Merge Sort for Doubly Linked List (DLL)</h3>
+                <p><strong>Concept:</strong> Merge Sort for a DLL follows the divide-and-conquer paradigm. The list is recursively divided into two halves until sublists of size 0 or 1 are obtained (which are inherently sorted). Then, these sorted sublists are merged back together in a sorted manner. Special care is needed to handle `prev` and `next` pointers during splitting and merging.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Input DLL: 7 &lt;-> 3 &lt;-> 10 &lt;-> 1 &lt;-> 5
+
+1. <strong>Divide:</strong>
+   - Find the middle (e.g., using slow and fast pointers). Middle element is 10.
+   - Split into two halves: (7 &lt;-> 3) and (10 &lt;-> 1 &lt;-> 5)
+     (Careful: (7 &lt;-> 3 &lt;-> 10) and (1 &lt;-> 5) if middle is 10 and it goes to left)
+     Let's say split is: L: 7 &lt;-> 3, R: 10 &lt;-> 1 &lt;-> 5 (approx middle)
+
+2. <strong>Recursively Sort:</strong>
+   - Sort L: (7 &lt;-> 3) -> (3 &lt;-> 7)
+     - Divide (7), (3)
+     - Merge (3), (7) -> (3 &lt;-> 7)
+   - Sort R: (10 &lt;-> 1 &lt;-> 5)
+     - Divide (10), (1 &lt;-> 5)
+     - Sort (1 &lt;-> 5) -> (1 &lt;-> 5) (already sorted as base cases or further recursion)
+     - Merge (10) and (1 &lt;-> 5) -> (1 &lt;-> 5 &lt;-> 10)
+
+3. <strong>Merge Sorted Halves:</strong>
+   - Merge (3 &lt;-> 7) and (1 &lt;-> 5 &lt;-> 10)
+   - Result: 1 &lt;-> 3 &lt;-> 5 &lt;-> 7 &lt;-> 10
+
+The merge step for DLLs involves carefully updating `next` and `prev` pointers of the nodes being merged.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Minimum Stack</h3>
+                <p><strong>Concept:</strong> A Minimum Stack is a variation of a regular stack that, in addition to standard push, pop, and top operations, supports a `getMin()` operation that returns the minimum element currently in the stack in O(1) time complexity.</p>
+                <p>This can be implemented by using an auxiliary stack that stores the minimum element seen so far at each level, or by storing pairs of (value, current_minimum) in the main stack.</p>
+                <p class="example-title">Test Example (using auxiliary stack):</p>
+                <pre><code>
+Main Stack (S): []
+Min Stack (MS): []
+
+Operations:
+1. push(5):
+   S: [5]
+   MS: [5] (5 is min)
+2. push(2):
+   S: [5, 2]
+   MS: [5, 2] (2 is min of 2, 5)
+3. push(7):
+   S: [5, 2, 7]
+   MS: [5, 2, 2] (min is still 2, as 7 > MS.top())
+4. getMin(): returns MS.top() which is 2.
+5. pop():
+   S.pop() returns 7.
+   MS.pop() (since 7 was not a new minimum).
+   S: [5, 2]
+   MS: [5, 2]
+6. getMin(): returns MS.top() which is 2.
+7. pop():
+   S.pop() returns 2.
+   MS.pop() (since 2 was the minimum).
+   S: [5]
+   MS: [5]
+8. getMin(): returns MS.top() which is 5.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>The Celebrity Problem</h3>
+                <p><strong>Concept:</strong> In a group of `n` people, a celebrity is a person who is known by everyone but knows no one themselves. The problem is to identify the celebrity, if one exists, by asking minimum questions of the form "Does person A know person B?".</p>
+                <p>A stack-based approach can efficiently solve this. It works by eliminating candidates who cannot be celebrities.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Input: Adjacency matrix `knows[i][j] = 1` if `i` knows `j`, else `0`.
+Example (3 people: 0, 1, 2):
+knows = [
+  [0, 0, 1],  // 0 knows 2
+  [0, 0, 1],  // 1 knows 2
+  [0, 0, 0]   // 2 knows no one
+]
+Here, person 2 is a celebrity (0 knows 2, 1 knows 2, but 2 knows no one).
+
+Algorithm using a stack:
+1. Push all people (0, 1, 2) onto a stack: Stack = [0, 1, 2] (top is 2)
+2. While stack size > 1:
+   a. Pop two people, A and B (e.g., B=2, A=1).
+   b. If A knows B (knows[A][B] == 1): A cannot be a celebrity (knows someone). Push B back.
+      Stack = [0], A=1, B=2. knows[1][2] is 1. 1 is not celebrity. Push 2. Stack = [0, 2]
+   c. Else (A does not know B): B cannot be a celebrity (not known by A). Push A back.
+
+Continuing:
+   Stack = [0, 2]
+   Pop A=0, B=2.
+   knows[0][2] is 1. 0 is not celebrity. Push 2. Stack = [2]
+
+3. The remaining person in the stack (e.g., 2) is a *potential* celebrity.
+4. Verify the potential celebrity:
+   a. Check if this person knows anyone: `knows[potential_celeb][i]` must be 0 for all `i`.
+      For person 2: knows[2][0]=0, knows[2][1]=0. (OK)
+   b. Check if everyone else knows this person: `knows[i][potential_celeb]` must be 1 for all `i != potential_celeb`.
+      For person 2: knows[0][2]=1, knows[1][2]=1. (OK)
+
+If both conditions pass, the person is a celebrity. Otherwise, no celebrity exists.
+Result: Person 2 is the celebrity.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Iterative Tower of Hanoi</h3>
+                <p><strong>Concept:</strong> The Tower of Hanoi puzzle involves moving a stack of disks of different sizes from a source peg to a destination peg using an auxiliary peg, with the rules that only one disk can be moved at a time and a larger disk cannot be placed on top of a smaller disk. The iterative solution can be derived by observing patterns in disk movements or by simulating the recursive calls explicitly using a stack.</p>
+                <p>One common iterative approach involves making legal moves between pegs based on the disk number (odd or even) and the total number of disks.</p>
+                <p class="example-title">Test Example (3 Disks):</p>
+                <pre><code>
+Pegs: S (Source), A (Auxiliary), D (Destination)
+Number of disks n = 3. Total moves = 2^n - 1 = 7.
+
+Iterative Logic (simplified):
+- If n is odd, the first move is from S to D.
+- If n is even, the first move is from S to A.
+- Then, make the only other legal move not involving the smallest disk.
+- Then, move the smallest disk again (cyclically: S -> D -> A -> S if n is odd, or S -> A -> D -> S if n is even).
+- Repeat until all disks are on D.
+
+Moves for n=3 (S to D, smallest disk moves S->D->A->S...):
+1. Move disk 1 from S to D. (S: [3,2], A: [], D: [1])
+2. Move disk 2 from S to A. (S: [3], A: [2], D: [1])
+3. Move disk 1 from D to A. (S: [3], A: [2,1], D: [])
+4. Move disk 3 from S to D. (S: [], A: [2,1], D: [3])
+5. Move disk 1 from A to S. (S: [1], A: [2], D: [3])
+6. Move disk 2 from A to D. (S: [1], A: [], D: [3,2])
+7. Move disk 1 from S to D. (S: [], A: [], D: [3,2,1])
+
+This demonstrates the sequence; implementing the iterative logic precisely requires careful handling of peg states and legal moves.
+Another iterative approach involves calculating moves based on the move number `i` from 1 to 2^n - 1.
+The disk to be moved at move `i` is disk `k` where `k` is the position of the least significant bit in the binary representation of `i`.
+The pegs between which the move occurs depends on `n` and `k`.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Stock Span Problem</h3>
+                <p><strong>Concept:</strong> The stock span problem involves calculating the span of a stock's price for each day. The span `S[i]` on day `i` is defined as the maximum number of consecutive days immediately preceding (and including) day `i` for which the price of the stock on the current day was less than or equal to its price on day `i`.</p>
+                <p>This can be efficiently solved using a stack, which stores the indices of previous days with prices greater than the current day's price.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Input Prices: [100, 80, 60, 70, 60, 75, 85]
+Output Spans: [  1,  1,  1,  2,  1,  4,  6]
+
+Algorithm using a stack (stores indices):
+Stack: []
+Spans: []
+
+Day 0 (Price 100):
+  Stack is empty. Span = 1. Push index 0.
+  Stack: [0 (price 100)], Spans: [1]
+
+Day 1 (Price 80):
+  80 < stack.top_price (100). Span = 1 (current_index - stack.top_index = 1 - 0 = 1, wait this is wrong).
+  While stack not empty AND price[stack.top()] <= price[current_day]: pop stack.
+  80 < 100. Stack top (0) has price 100. Price[0] > 80.
+  Span = current_index - stack.top_index (if stack not empty) else current_index + 1.
+  Span for 80: stack top is index 0 (price 100). 80 < 100. Span = 1 (index 1 - index of previous greater element, which is 0 -> 1).
+  Correct logic: Span[i] = i - (index of closest greater element to the left). If no such element, then i+1.
+  Stack will store indices of elements in decreasing order of prices.
+
+Let's re-trace with correct stack usage:
+Prices: P = [100, 80, 60, 70, 60, 75, 85]
+Spans: S = []
+Stack (stores indices): st = []
+
+1. Price = 100 (i=0):
+   st is empty. Span = i+1 = 1. S=[1]. Push 0. st=[0].
+2. Price = 80 (i=1):
+   P[st.top()]=P[0]=100 > 80. Span = i - st.top() = 1-0 = 1. S=[1,1]. Push 1. st=[0,1].
+3. Price = 60 (i=2):
+   P[st.top()]=P[1]=80 > 60. Span = i - st.top() = 2-1 = 1. S=[1,1,1]. Push 2. st=[0,1,2].
+4. Price = 70 (i=3):
+   P[st.top()]=P[2]=60 < 70. Pop 2. st=[0,1].
+   P[st.top()]=P[1]=80 > 70. Span = i - st.top() = 3-1 = 2. S=[1,1,1,2]. Push 3. st=[0,1,3].
+5. Price = 60 (i=4):
+   P[st.top()]=P[3]=70 > 60. Span = i - st.top() = 4-3 = 1. S=[1,1,1,2,1]. Push 4. st=[0,1,3,4].
+6. Price = 75 (i=5):
+   P[st.top()]=P[4]=60 < 75. Pop 4. st=[0,1,3].
+   P[st.top()]=P[3]=70 < 75. Pop 3. st=[0,1].
+   P[st.top()]=P[1]=80 > 75. Span = i - st.top() = 5-1 = 4. S=[1,1,1,2,1,4]. Push 5. st=[0,1,5].
+7. Price = 85 (i=6):
+   P[st.top()]=P[5]=75 < 85. Pop 5. st=[0,1].
+   P[st.top()]=P[1]=80 < 85. Pop 1. st=[0].
+   P[st.top()]=P[0]=100 > 85. Span = i - st.top() = 6-0 = 6. S=[1,1,1,2,1,4,6]. Push 6. st=[0,6].
+
+Final Spans: [1, 1, 1, 2, 1, 4, 6]
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Priority Queue using Doubly Linked List (DLL)</h3>
+                <p><strong>Concept:</strong> A priority queue is an abstract data type where each element has an associated priority. Elements with higher priority are served before elements with lower priority. Using a DLL to implement a priority queue can be done in several ways. If the DLL is kept sorted by priority, `enqueue` (insertion) takes O(n) in the worst case (to find the correct position) and `dequeue` (removing the highest priority) takes O(1). If unsorted, `enqueue` is O(1) and `dequeue` is O(n) (to find the highest priority element).</p>
+                <p class="example-title">Test Example (DLL sorted by priority - higher value = higher priority):</p>
+                <pre><code>
+DLL: head <-> ... <-> tail (stores (data, priority) pairs)
+
+Assume higher numerical value means higher priority. List is sorted descending by priority.
+
+1. Enqueue(item: A, priority: 3):
+   DLL: (A,3)
+2. Enqueue(item: B, priority: 5):
+   Traverse to find position. 5 > 3.
+   DLL: (B,5) <-> (A,3)
+3. Enqueue(item: C, priority: 2):
+   Traverse. 2 < 5, 2 < 3.
+   DLL: (B,5) <-> (A,3) <-> (C,2)
+4. Dequeue (remove highest priority):
+   Remove from head (B,5).
+   DLL: (A,3) <-> (C,2)
+   Returned: B
+5. Peek (view highest priority):
+   Return head's data. (A,3)
+   Returned: A
+
+Complexity:
+- Enqueue: O(n) to find insertion point.
+- Dequeue (highest priority): O(1) if highest is at head/tail.
+- Peek: O(1).
+
+If not keeping it sorted (simple append to DLL):
+- Enqueue: O(1).
+- Dequeue: O(n) to find element with highest priority.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Maximum Sliding Window</h3>
+                <p><strong>Concept:</strong> Given an array of integers and a window size `k`, the problem is to find the maximum value within each sliding window of size `k` as it moves from the beginning to the end of the array. A Deque (double-ended queue) is often used for an efficient O(n) solution.</p>
+                <p>The deque stores indices of array elements. It's maintained such that elements are in decreasing order of their values, and only elements within the current window are kept.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Array: [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+Output: [3, 3, 5, 5, 6, 7]
+
+Deque (stores indices): dq = []
+Result: res = []
+
+Window 1: [1, 3, -1] (indices 0, 1, 2)
+- Process 1 (idx 0): dq = [0]
+- Process 3 (idx 1): nums[0]=1 < nums[1]=3. Pop 0. dq = [1]
+- Process -1 (idx 2): nums[1]=3 > nums[2]=-1. dq = [1, 2]
+  Window is full (idx >= k-1, i.e., 2 >= 2). Max is nums[dq.front()] = nums[1] = 3. res = [3]
+
+Window 2: [3, -1, -3] (indices 1, 2, 3)
+- Remove out-of-window elements: dq.front() is 1. Window starts at 3-3+1 = 1. Index 1 is in window.
+- Process -3 (idx 3): nums[2]=-1 > nums[3]=-3. dq = [1, 2, 3]
+  Max is nums[dq.front()] = nums[1] = 3. res = [3, 3]
+
+Window 3: [-1, -3, 5] (indices 2, 3, 4)
+- Remove out-of-window: dq.front() is 1. Window starts at 4-3+1 = 2. Pop 1. dq = [2, 3]
+- Process 5 (idx 4):
+  nums[3]=-3 < nums[4]=5. Pop 3. dq = [2]
+  nums[2]=-1 < nums[4]=5. Pop 2. dq = []
+  dq = [4]
+  Max is nums[dq.front()] = nums[4] = 5. res = [3, 3, 5]
+
+Window 4: [-3, 5, 3] (indices 3, 4, 5)
+- Remove out-of-window: dq.front() is 4. Window starts at 5-3+1 = 3. Index 4 is in.
+- Process 3 (idx 5): nums[4]=5 > nums[5]=3. dq = [4, 5]
+  Max is nums[dq.front()] = nums[4] = 5. res = [3, 3, 5, 5]
+
+Window 5: [5, 3, 6] (indices 4, 5, 6)
+- Remove out-of-window: dq.front() is 4. Window starts at 6-3+1 = 4. Index 4 is in.
+- Process 6 (idx 6):
+  nums[5]=3 < nums[6]=6. Pop 5. dq = [4]
+  nums[4]=5 < nums[6]=6. Pop 4. dq = []
+  dq = [6]
+  Max is nums[dq.front()] = nums[6] = 6. res = [3, 3, 5, 5, 6]
+
+Window 6: [3, 6, 7] (indices 5, 6, 7)
+- Remove out-of-window: dq.front() is 6. Window starts at 7-3+1 = 5. Index 6 is in.
+- Process 7 (idx 7):
+  nums[6]=6 < nums[7]=7. Pop 6. dq = []
+  dq = [7]
+  Max is nums[dq.front()] = nums[7] = 7. res = [3, 3, 5, 5, 6, 7]
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Stack Permutations</h3>
+                <p><strong>Concept:</strong> Given two arrays, an input array and an output array (permutation of input), determine if the output array can be generated from the input array using only a stack and its standard operations (push, pop). The input array elements are processed one by one. At each step, an element can either be pushed onto the stack or, if the stack is not empty and its top matches the next expected element in the output array, it can be popped.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Input array: [1, 2, 3]
+Output array (to check): [2, 1, 3]
+Is this permutation possible?
+
+Stack: s = []
+Input pointer: i = 0 (points to 1 in input)
+Output pointer: j = 0 (points to 2 in output)
+
+1. Output[j] is 2.
+   Input[i] is 1. Push 1 onto stack. s = [1]. i = 1.
+2. Output[j] is 2.
+   Input[i] is 2. Push 2 onto stack. s = [1, 2]. i = 2.
+3. Output[j] is 2. Stack.top() is 2. Match! Pop from stack. s = [1]. j = 1.
+4. Output[j] is 1. Stack.top() is 1. Match! Pop from stack. s = []. j = 2.
+5. Output[j] is 3.
+   Input[i] is 3. Push 3 onto stack. s = [3]. i = 3 (end of input).
+6. Output[j] is 3. Stack.top() is 3. Match! Pop from stack. s = []. j = 3 (end of output).
+
+Since stack is empty and output array is fully processed, [2, 1, 3] is a possible stack permutation.
+
+Example of impossible permutation:
+Input: [1, 2, 3], Output: [3, 1, 2]
+1. Need 3. Push 1, 2, 3. s = [1,2,3].
+2. Pop 3. s = [1,2]. Output matched: [3].
+3. Need 1. Stack.top() is 2. Cannot pop. No more input. Cannot produce 1.
+   Therefore, [3,1,2] is not possible. (Mistake in trace, need to pop if possible)
+   Let's re-evaluate:
+   Need 3: push 1, push 2, push 3. Stack: [1,2,3]. Pop 3. Matched: [3]. Stack: [1,2].
+   Need 1: Stack top is 2 != 1. Input exhausted. We can't get 1 before 2.
+   So, [3,1,2] is not a possible stack permutation.
+                </code></pre>
+            </div>
+        </div> <!-- End Section: Linked Lists, Stacks & Queues -->
+
+        <div class="section" id="trees-graphs">
+            <h2 class="section-title">Trees & Graphs</h2>
+
+            <div class="topic">
+                <h3>Recover the BST (Binary Search Tree)</h3>
+                <p><strong>Concept:</strong> This problem involves a Binary Search Tree (BST) where exactly two nodes have been swapped by mistake, violating the BST property. The goal is to identify these two nodes and restore the BST property, typically by swapping them back. This can often be solved by performing an in-order traversal of the BST. In a correct BST, an in-order traversal yields elements in sorted order. When two nodes are swapped, this sorted order will be violated at one or two points.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Incorrect BST (e.g., 3 and 10 swapped):
+      6
+     / \
+    10  7   (Should be 3 here)
+   / \   \
+  1   4   8 (Should be 10 here if it was swapped with 3 that was 6's left child)
+
+Let original BST be:
+      6
+     / \
+    3   7
+   / \   \
+  1   4   8
+           \
+            10 (assuming 10 was here)
+If 3 and 10 are swapped:
+      6
+     / \
+    10  7  (Node with value 10, originally 3)
+   / \   \
+  1   4   8
+           \
+            3  (Node with value 3, originally 10)
+
+In-order traversal of the incorrect BST: 1, 4, 10, (value from node originally 3) 6, 7, 8, 3 (value from node originally 10)
+Sorted order: 1, 3, 4, 6, 7, 8, 10
+
+Violations:
+- When traversing from 4 to "10": (4 < 10) - OK (but "10" is the wrong node)
+- When traversing from "10" to 6: (10 > 6) - First violation! First swapped node is the previous element ("10").
+- When traversing from 8 to "3": (8 > 3) - Second violation! Second swapped node is the current element ("3").
+
+Algorithm:
+1. Initialize three pointers: `first`, `middle`, `last` to null, and `prev` to a very small number.
+2. Perform in-order traversal:
+   - If `currentNode.val < prevNode.val`:
+     - If `first` is null: `first = prevNode`, `middle = currentNode`.
+     - Else: `last = currentNode`.
+   - Update `prevNode = currentNode`.
+3. After traversal:
+   - If `first` and `last` are found, swap `first.val` and `last.val`.
+   - If only `first` and `middle` are found (adjacent swap), swap `first.val` and `middle.val`.
+
+Example with values: 1, 4, 10, 6, 7, 8, 3
+- prev=MIN_INT
+- current=1: prev=1
+- current=4: prev=4
+- current=10: prev=10
+- current=6: (6 < 10) -> first=10 (node with value 10), middle=6 (node with value 6)
+             prev=6
+- current=7: prev=7
+- current=8: prev=8
+- current=3: (3 < 8) -> last=3 (node with value 3)
+             prev=3
+
+Swap `first` (node with 10) and `last` (node with 3).
+
+If the swapped nodes were adjacent, e.g., 1, 5, 3, 8 (5 and 3 swapped):
+- ... prev=1
+- current=5: prev=5
+- current=3: (3 < 5) -> first=5, middle=3
+- current=8: prev=8
+Here, `last` remains null. Swap `first` and `middle`.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Views of Tree (Binary Tree)</h3>
+                <p><strong>Concept:</strong> Different "views" of a binary tree provide unique perspectives of its structure by showing only certain nodes. Common views include:</p>
+                <ul>
+                    <li><strong>Left View:</strong> The set of nodes visible when the tree is viewed from the left side. These are the first nodes encountered at each level.</li>
+                    <li><strong>Right View:</strong> The set of nodes visible when the tree is viewed from the right side. These are the last nodes encountered at each level.</li>
+                    <li><strong>Top View:</strong> The set of nodes visible when the tree is viewed from the top. If multiple nodes are at the same horizontal distance, the one closer to the root (or appearing first in level-order for ties) is seen.</li>
+                    <li><strong>Bottom View:</strong> The set of nodes visible when the tree is viewed from the bottom. If multiple nodes are at the same horizontal distance, the one that is "lower" (appears later in a vertical line traversal) is seen.</li>
+                </ul>
+                <p class="example-title">Test Example Tree:</p>
+                <pre><code>
+      1
+     / \
+    2   3
+     \   \
+      5   4
+     /
+    6
+
+Level 0: 1
+Level 1: 2, 3
+Level 2: 5, 4 (from left to right)
+Level 3: 6
+
+Left View:
+- Level 0: 1
+- Level 1: 2 (first node)
+- Level 2: 5 (first node, considering 2's child before 3's)
+- Level 3: 6 (first node)
+Result: [1, 2, 5, 6]
+(Can be found using BFS/DFS, keeping track of max level visited)
+
+Right View:
+- Level 0: 1
+- Level 1: 3 (last node)
+- Level 2: 4 (last node)
+- Level 3: 6 (last node)
+Result: [1, 3, 4, 6]
+(Can be found using BFS/DFS, printing the last node of each level or right-to-left BFS/DFS)
+
+Top View (Horizontal Distance, Level):
+Node | HD | Level
+-----------------
+  1  |  0 |  0   -> Seen: 1 (HD 0)
+  2  | -1 |  1   -> Seen: 2 (HD -1)
+  3  |  1 |  1   -> Seen: 3 (HD 1)
+  5  |  0 |  2   -> HD 0 already has 1 (level 0). 1 is seen.
+  4  |  2 |  2   -> Seen: 4 (HD 2)
+  6  | -1 |  3   -> HD -1 already has 2 (level 1). 2 is seen.
+Result: [2, 1, 3, 4] (ordered by HD: 6(-1), 2(-1), 1(0), 5(0), 3(1), 4(2) -> choose earliest by level or first seen at HD)
+Correct Top View (order by HD, then min level):
+HD -1: 2 (level 1), 6 (level 3) -> 2
+HD  0: 1 (level 0), 5 (level 2) -> 1
+HD  1: 3 (level 1)            -> 3
+HD  2: 4 (level 2)            -> 4
+Result: [2, 1, 3, 4] (Order of HDs for printing: -1, 0, 1, 2)
+
+Bottom View (Horizontal Distance, Node value - if multiple at same HD, last one by level or largest level):
+Node | HD | Level
+-----------------
+  6  | -1 |  3   -> For HD -1, 6 is last
+  2  | -1 |  1
+  5  |  0 |  2   -> For HD 0, 5 is last
+  1  |  0 |  0
+  3  |  1 |  1   -> For HD 1, 3 is last
+  4  |  2 |  2   -> For HD 2, 4 is last
+Result: [6, 5, 3, 4] (Order of HDs for printing: -1, 0, 1, 2. For HD -1 nodes are (2, L1), (6,L3) -> 6. For HD 0 nodes are (1, L0), (5,L2) -> 5)
+Correct Bottom View logic: For each HD, the node that is encountered last (typically meaning at the greatest depth, or if same depth then the one processed later in a traversal like level order).
+HD -1: 6 (from node 6)
+HD  0: 5 (from node 5)
+HD  1: 3 (from node 3)
+HD  2: 4 (from node 4)
+Result: [6, 5, 3, 4] (Typically output sorted by HD)
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Vertical Order Traversal of a Binary Tree</h3>
+                <p><strong>Concept:</strong> A vertical order traversal of a binary tree prints out tree nodes column by column, from left to right. Within each column (defined by a horizontal distance from the root), nodes are typically printed from top to bottom (by their level or depth).</p>
+                <p>This is often done using a Level Order Traversal (BFS) approach, where each node is associated with its horizontal distance (HD). A map can store nodes for each HD.</p>
+                <p class="example-title">Test Example Tree:</p>
+                <pre><code>
+      1 (HD=0)
+     / \
+    2   3 (HD=-1, HD=1)
+   / \ / \
+  4  5 6  7 (HD=-2, HD=0, HD=0, HD=2)
+       (Node 5 is HD -1+1=0, Node 6 is HD 1-1=0)
+Let's re-assign HDs properly for a common example:
+       1 (HD=0, L=0)
+      / \
+     2   3 (HD=-1, L=1; HD=1, L=1)
+    / \   \
+   4   5   6 (HD=-2, L=2; HD=0, L=2; HD=2, L=2)
+        \
+         7 (HD=1, L=3)
+
+Map: HD -> List of nodes (sorted by level, or by value if same level & HD)
+
+Queue for BFS: [(node, HD, level)]
+1. Enqueue (1, 0, 0). Map: {0: [1]}
+2. Dequeue (1,0,0).
+   Enqueue (2, -1, 1). Map: {0: [1], -1: [2]}
+   Enqueue (3, 1, 1). Map: {0: [1], -1: [2], 1: [3]}
+3. Dequeue (2,-1,1).
+   Enqueue (4, -2, 2). Map: {0: [1], -1: [2], 1: [3], -2: [4]}
+   Enqueue (5, 0, 2). Map: {0: [1, 5], -1: [2], 1: [3], -2: [4]} (If same level, order by value or arrival)
+4. Dequeue (3,1,1).
+   Enqueue (6, 2, 2). Map: {0: [1,5], -1:[2], 1:[3], -2:[4], 2:[6]}
+   Enqueue (7, 1, 3) from 6's right (assuming 6 has a right child 7 for clarity - using example tree)
+   Actually, from problem: (Node 5: left child of 2 is 4, right is 5. Node 3: left child 6, right child 7).
+   Correcting HDs based on standard left (-1) / right (+1) from parent:
+       1 (0,0)
+      /   \
+     2(-1,1) 3(1,1)
+    /  \    /  \
+   4(-2,2)5(0,2)6(0,2)7(2,2)  <- If 5 is R of 2, 6 is L of 3, 7 is R of 3
+
+Let's use the first example tree again for vertical:
+      1 (HD=0)
+     / \
+    2   3 (HD=-1, HD=1)
+     \   \
+      5   4 (HD=0 (from 2->5), HD=2 (from 3->4))
+     /
+    6 (HD=-1 (from 5->6))
+
+Queue: (node, HD)
+(1,0) -> Map: {0:[1]}
+(2,-1) -> Map: {0:[1], -1:[2]}
+(3,1) -> Map: {0:[1], -1:[2], 1:[3]}
+(5, 0) (from 2.right) -> Map: {0:[1,5], -1:[2], 1:[3]} (order within HD 0: 1 then 5 due to level)
+(4, 2) (from 3.right) -> Map: {0:[1,5], -1:[2], 1:[3], 2:[4]}
+(6, -1) (from 5.left) -> Map: {0:[1,5], -1:[2,6], 1:[3], 2:[4]} (order within HD -1: 2 then 6)
+
+Sorted HDs: -1, 0, 1, 2
+HD -1: [2, 6]
+HD  0: [1, 5]
+HD  1: [3]
+HD  2: [4]
+Output: [[2,6], [1,5], [3], [4]]
+If nodes at same HD and level, they appear in order of visiting (BFS).
+If problem requires sorting by node value for ties in HD and level, that's an additional step.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Boundary Traversal of a Binary Tree</h3>
+                <p><strong>Concept:</strong> Boundary traversal of a binary tree includes nodes forming the boundary of the tree. It's typically done in an anti-clockwise direction and consists of three parts:</p>
+                <ol>
+                    <li>The left boundary (excluding leaf nodes).</li>
+                    <li>All leaf nodes (traversed from left to right).</li>
+                    <li>The right boundary in reverse order (excluding leaf nodes).</li>
+                </ol>
+                <p>The root is usually printed first and only once.</p>
+                <p class="example-title">Test Example Tree:</p>
+                <pre><code>
+          20
+         /  \
+        8    22
+       / \    \
+      4  12    25
+         / \
+        10 14
+
+1. Print Root: [20]
+
+2. Left Boundary (top-down, excluding leaves):
+   Start from root.left. Print if not a leaf. Move left. If no left, move right.
+   - Node 8 (not leaf): [20, 8]
+   - Node 4 (leaf, so don't print here for left boundary part, unless it's the only left child)
+     Correct logic for left boundary: print node if it's not a leaf, then go root.left. If no root.left, go root.right.
+     Root = 20.
+     Left boundary:
+     - Current = 20.left = 8. Print 8. Current = 8.left = 4.
+     - Current = 4. It's a leaf. Stop.
+     So, left boundary (excluding leaves and root): [8]
+     Actually, path is 20 -> 8 -> 4. Left boundary is 20, 8.
+
+Let's use standard definition:
+   - Root node (if not null).
+   - Left boundary: Traverse left children. If no left child, check for right child that's part of boundary. Exclude leaves.
+   - Leaf nodes: Standard in-order, pre-order, or post-order traversal, printing only leaves.
+   - Right boundary: Traverse right children in reverse (bottom-up). Exclude leaves.
+
+Example:
+Root: 20. Result: [20]
+
+Left Boundary (excluding root & leaves):
+  Node 8. Print 8. Go to 8.left (4). Node 4 is a leaf. Stop.
+  Left boundary nodes: [8]
+
+Leaf Nodes (left to right):
+  DFS/BFS: 4, 10, 14, 25
+  Leaf nodes: [4, 10, 14, 25]
+
+Right Boundary (bottom-up, excluding root & leaves):
+  Start from root.right. Print if not a leaf. Move right. If no right, move left. Then reverse.
+  Path: 20 -> 22 -> 25.
+  Nodes: 22 (not leaf), 25 (leaf). So, only 22 is part of right boundary (excluding leaves).
+  Right boundary nodes (to be reversed): [22]
+
+Combining:
+Result = [Root] + [Left Boundary non-leaves] + [Leaves] + [Reversed Right Boundary non-leaves]
+Result = [20] + [8] + [4, 10, 14, 25] + [22] (reversed from path 22)
+Result = [20, 8, 4, 10, 14, 25, 22]
+
+Consider a tree:
+      1
+     / \
+    2   3
+   / \ / \
+  4  5 6  7
+
+Root: [1]
+Left Boundary (exc. leaves): [2] (4 is leaf, 5 might be if no children)
+    - Path: 1->2->4. Node 2.
+Leaf Nodes: [4, 5, 6, 7] (assuming 5,6,7 are leaves)
+Right Boundary (exc. leaves, reversed): [3]
+    - Path: 1->3->7. Node 3.
+Result: [1, 2, 4, 5, 6, 7, 3]
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>BFS (Breadth-First Search) and DFS (Depth-First Search)</h3>
+                <p><strong>Concept:</strong></p>
+                <ul>
+                    <li><strong>BFS:</strong> A graph traversal algorithm that explores neighbor nodes first, before moving to the next level neighbors. It uses a queue to keep track of nodes to visit. Often used to find the shortest path in unweighted graphs.</li>
+                    <li><strong>DFS:</strong> A graph traversal algorithm that explores as far as possible along each branch before backtracking. It uses a stack (explicitly or implicitly via recursion) to keep track of nodes. Used in topological sorting, cycle detection, etc.</li>
+                </ul>
+                <p class="example-title">Test Example Graph (Adjacency List):</p>
+                <pre><code>
+Graph:
+0: [1, 2]
+1: [0, 3]
+2: [0, 3]
+3: [1, 2, 4]
+4: [3]
+
+Starting node: 0
+
+BFS from 0:
+1. Queue: [0], Visited: {0} -> Output: [0]
+2. Dequeue 0. Neighbors of 0 are 1, 2.
+   Enqueue 1 (Visited: {0,1}). Enqueue 2 (Visited: {0,1,2}).
+   Queue: [1, 2] -> Output: [0, 1, 2] (order of adding to queue)
+3. Dequeue 1. Neighbors of 1 are 0, 3.
+   0 is visited. Enqueue 3 (Visited: {0,1,2,3}).
+   Queue: [2, 3] -> Output: [0, 1, 2, 3]
+4. Dequeue 2. Neighbors of 2 are 0, 3.
+   0, 3 are visited.
+   Queue: [3]
+5. Dequeue 3. Neighbors of 3 are 1, 2, 4.
+   1, 2 are visited. Enqueue 4 (Visited: {0,1,2,3,4}).
+   Queue: [4] -> Output: [0, 1, 2, 3, 4]
+6. Dequeue 4. Neighbors of 4 are 3.
+   3 is visited.
+   Queue: []
+BFS Order: 0, 1, 2, 3, 4 (One possible order)
+
+DFS from 0 (Recursive):
+Visited: {}
+dfs(node):
+  Mark node as visited. Print node.
+  For each neighbor `adj` of `node`:
+    If `adj` not visited:
+      dfs(adj)
+
+dfs(0):
+  Visited: {0}, Print 0. Output: [0]
+  Neighbor 1: Not visited. dfs(1)
+    Visited: {0,1}, Print 1. Output: [0,1]
+    Neighbor 0 (of 1): Visited.
+    Neighbor 3 (of 1): Not visited. dfs(3)
+      Visited: {0,1,3}, Print 3. Output: [0,1,3]
+      Neighbor 1 (of 3): Visited.
+      Neighbor 2 (of 3): Not visited. dfs(2)
+        Visited: {0,1,3,2}, Print 2. Output: [0,1,3,2]
+        Neighbor 0 (of 2): Visited.
+        Neighbor 3 (of 2): Visited.
+        Return from dfs(2)
+      Neighbor 4 (of 3): Not visited. dfs(4)
+        Visited: {0,1,3,2,4}, Print 4. Output: [0,1,3,2,4]
+        Neighbor 3 (of 4): Visited.
+        Return from dfs(4)
+      Return from dfs(3)
+    Return from dfs(1)
+  Neighbor 2 (of 0): Visited (if dfs(3) explored it, or if it's processed after 1)
+    Order of neighbors matters. If 2 was chosen before 1 from 0:
+    dfs(0) -> Print 0
+      dfs(2) -> Print 2
+        dfs(3) -> Print 3 (via 2->3)
+          dfs(1) -> Print 1 (via 3->1)
+            dfs(4) -> Print 4 (via 3->4, assuming 1 already explored from 3)
+DFS Order (example): 0, 1, 3, 2, 4 OR 0, 2, 3, 1, 4 etc. (depends on neighbor processing order)
+A common DFS path: 0 -> 1 -> 3 -> 4 -> (backtrack to 3) -> 2 (from 3's other neighbor)
+Stack-based DFS can make this explicit.
+                </code></pre>
+            </div>
+
+            <!-- More topics for Trees & Graphs will go here -->
+            <div class="topic">
+                <h3>Dial's Algorithm</h3>
+                <p><strong>Concept:</strong> Dial's algorithm is used to find the shortest paths from a single source vertex to all other vertices in a weighted directed graph where edge weights are small integers (specifically, non-negative and bounded by a maximum value `W`). It's an optimization of Dijkstra's algorithm for such graphs. It uses an array of buckets (or lists), where bucket `i` stores vertices whose current shortest distance from the source is `i`. Instead of a priority queue, it processes vertices from the smallest non-empty bucket index.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Graph (source=0, max edge weight W=3):
+0 -> 1 (weight 1)
+0 -> 2 (weight 3)
+1 -> 2 (weight 1)
+1 -> 3 (weight 2)
+2 -> 3 (weight 1)
+
+Max possible distance can be estimated or use a large enough array.
+Let number of vertices V=4. Max edge weight W=3.
+Buckets: `B[0...V*W]` or a more optimized size. Let's say `B[0... (V-1)*W]`.
+Distances: `dist[0..V-1]` initialized to infinity, `dist[source]=0`.
+
+1. Initialize `dist = [0, INF, INF, INF]`.
+2. Buckets: `B` (array of lists). Add vertex 0 to `B[0]`.
+   `B = { 0: [0], 1:[], 2:[], 3:[], ... }`
+
+3. Iterate through buckets `idx` from 0 upwards:
+   Current `idx = 0`:
+     While `B[idx]` is not empty:
+       Pop `u` from `B[idx]`. Let `u=0`.
+       For each neighbor `v` of `u`: (0->1, w=1; 0->2, w=3)
+         - For neighbor 1:
+           If `dist[0] + weight(0,1) < dist[1]` (i.e., `0 + 1 < INF`):
+             `dist[1] = 1`.
+             Remove 1 from its old bucket (if any). Add 1 to `B[1]`.
+             `B = { 0: [], 1:[1], 2:[], 3:[], ... }`
+         - For neighbor 2:
+           If `dist[0] + weight(0,2) < dist[2]` (i.e., `0 + 3 < INF`):
+             `dist[2] = 3`.
+             Remove 2 from old bucket. Add 2 to `B[3]`.
+             `B = { 0: [], 1:[1], 2:[], 3:[2], ... }`
+
+   Current `idx = 1`:
+     While `B[1]` is not empty:
+       Pop `u` from `B[1]`. Let `u=1`. (`dist[1]=1`)
+       For each neighbor `v` of `u`: (1->2, w=1; 1->3, w=2)
+         - For neighbor 2:
+           If `dist[1] + weight(1,2) < dist[2]` (i.e., `1 + 1 < 3` which is `2 < 3`):
+             `dist[2] = 2`.
+             Remove 2 from `B[3]`. Add 2 to `B[2]`.
+             `B = { 0: [], 1:[], 2:[2], 3:[], ... }` (old `B[3]` had [2])
+         - For neighbor 3:
+           If `dist[1] + weight(1,3) < dist[3]` (i.e., `1 + 2 < INF`):
+             `dist[3] = 3`.
+             Add 3 to `B[3]`.
+             `B = { 0: [], 1:[], 2:[2], 3:[3], ... }`
+
+   Current `idx = 2`:
+     While `B[2]` is not empty:
+       Pop `u` from `B[2]`. Let `u=2`. (`dist[2]=2`)
+       For each neighbor `v` of `u`: (2->3, w=1)
+         - For neighbor 3:
+           If `dist[2] + weight(2,3) < dist[3]` (i.e., `2 + 1 < 3` is false, `3 < 3` is false). No update.
+           Wait, `dist[3]` was `3`. `2+1=3`. If it's `strictly <`, no update. If `<=`, update.
+           Dijkstra usually updates if `<`. `dist[3]` remains 3.
+
+   Current `idx = 3`:
+     While `B[3]` is not empty:
+       Pop `u` from `B[3]`. Let `u=3`. (`dist[3]=3`)
+       No outgoing edges from 3 in this example to update others.
+
+Final distances: `dist = [0, 1, 2, 3]`
+Source 0:
+dist(0,0) = 0
+dist(0,1) = 1 (0->1)
+dist(0,2) = 2 (0->1->2)
+dist(0,3) = 3 (0->1->3 or 0->1->2->3) - needs checking
+  Path 0->1->3 has cost 1+2=3.
+  Path 0->1->2->3 has cost 1+1+1=3.
+The algorithm correctly finds shortest paths. The key is that when a node `u` is extracted from bucket `B[d]`, its `dist[u]` is finalized at `d`.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Bellman-Ford Algorithm</h3>
+                <p><strong>Concept:</strong> The Bellman-Ford algorithm computes shortest paths from a single source vertex to all other vertices in a weighted digraph. Unlike Dijkstra's algorithm, it can handle graphs with negative edge weights. It works by relaxing edges iteratively. For a graph with `V` vertices, it performs `V-1` iterations. In each iteration, it updates the distances to all vertices if a shorter path is found. After `V-1` iterations, if any distance can still be reduced in a `V`-th iteration, it indicates a negative-weight cycle reachable from the source.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Graph (source=A):
+A -> B (weight 6)
+A -> C (weight 7)
+B -> D (weight 5)
+B -> E (weight -4)
+C -> D (weight -3)
+C -> E (weight 9)
+D -> B (weight -2)
+E -> A (weight 2)  (This edge creates a cycle, let's see effect)
+E -> D (weight 7)
+
+Vertices: A, B, C, D, E (V=5)
+Initialize distances: dist[A]=0, dist[others]=INF
+
+Iteration 1 (Relax all edges):
+- A->B (6): dist[B] = min(INF, 0+6) = 6
+- A->C (7): dist[C] = min(INF, 0+7) = 7
+- B->D (5): dist[D] = min(INF, 6+5) = 11
+- B->E (-4): dist[E] = min(INF, 6-4) = 2
+- C->D (-3): dist[D] = min(11, 7-3) = 4
+- C->E (9): dist[E] = min(2, 7+9) = 2 (no change)
+- D->B (-2): dist[B] = min(6, 4-2) = 2
+- E->A (2): dist[A] = min(0, 2+2) = 0 (no change, source fixed)
+- E->D (7): dist[D] = min(4, 2+7) = 4 (no change)
+After 1st iter: dist = {A:0, B:2, C:7, D:4, E:2}
+
+Iteration 2 (Relax all edges using updated distances):
+- A->B (6): dist[B] = min(2, 0+6) = 2
+- A->C (7): dist[C] = min(7, 0+7) = 7
+- B->D (5): dist[D] = min(4, 2+5) = 4 (no change, was 4 from C->D)
+  Actually, dist[B] is 2 from D->B in prev. iter. So 2+5=7. dist[D]=min(4,7)=4.
+- B->E (-4): dist[E] = min(2, 2-4) = -2
+- C->D (-3): dist[D] = min(4, 7-3) = 4
+- C->E (9): dist[E] = min(-2, 7+9) = -2
+- D->B (-2): dist[B] = min(2, 4-2) = 2
+- E->A (2): dist[A] = min(0, -2+2) = 0
+- E->D (7): dist[D] = min(4, -2+7) = 4 (no change, was 5)
+  Actually, dist[D]=min(4, -2+7=5) = 4
+After 2nd iter: dist = {A:0, B:2, C:7, D:4, E:-2}
+
+Iteration 3 (V-1 = 4 iterations needed):
+- A->B: no change
+- A->C: no change
+- B->D (5): dist[D] = min(4, 2+5=7) = 4
+- B->E (-4): dist[E] = min(-2, 2-4=-2) = -2
+- C->D (-3): dist[D] = min(4, 7-3=4) = 4
+- C->E (9): dist[E] = min(-2, 7+9=16) = -2
+- D->B (-2): dist[B] = min(2, 4-2=2) = 2
+- E->A (2): dist[A] = min(0, -2+2=0) = 0
+- E->D (7): dist[D] = min(4, -2+7=5) = 4
+After 3rd iter: dist = {A:0, B:2, C:7, D:4, E:-2} (No changes from Iter 2 this time)
+
+Iteration 4:
+(If no changes occurred in Iter 3, they won't occur in Iter 4 either, assuming no negative cycles yet propagated fully)
+Let's assume the values are stable.
+dist = {A:0, B:2, C:7, D:4, E:-2}
+
+Check for negative cycles (V-th iteration, i.e., 5th iteration):
+Try to relax any edge. E.g., B->E (-4).
+Current dist[E]=-2. New path dist[B]+cost = 2 + (-4) = -2. No change.
+Consider a cycle: B -> E -> A -> B. Costs: -4, 2, 6. Sum = 4 (not negative).
+Consider cycle B -> D -> B. Costs: 5, -2. Sum = 3.
+If there was a cycle like E -> A -> (some path back to E with total negative sum affecting E).
+Example: If E->A was -5 instead of 2.
+Cycle E -> A -> B -> E. Costs: -5 (E->A), 6 (A->B), -4 (B->E). Total: -5+6-4 = -3. This is a negative cycle.
+If such a cycle exists and is reachable from source, distances will keep decreasing.
+
+In the V-th iteration, if any `dist[v] > dist[u] + weight(u,v)` update happens, a negative cycle is detected.
+With the original weights, let's assume dist are stable.
+The shortest paths are: A:0, B:2, C:7, D:4, E:-2.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Topological Sort</h3>
+                <p><strong>Concept:</strong> Topological sort is a linear ordering of vertices in a Directed Acyclic Graph (DAG) such that for every directed edge `u -> v`, vertex `u` comes before vertex `v` in the ordering. If the graph contains a cycle, a topological sort is not possible. It's often used in scheduling tasks with dependencies.</p>
+                <p>Common algorithms include Kahn's algorithm (BFS-based using in-degrees) and a DFS-based algorithm.</p>
+                <p class="example-title">Test Example (DFS-based):</p>
+                <pre><code>
+Graph (Dependencies: e.g., 5 depends on 0 and 2):
+0 -> 1
+0 -> 2
+1 -> 3
+2 -> 3
+2 -> 4
+5 -> 0 (No, let's make it acyclic for sort)
+Let's use a standard example:
+5 -> 2
+5 -> 0
+4 -> 0
+4 -> 1
+2 -> 3
+3 -> 1
+
+Vertices: 0, 1, 2, 3, 4, 5
+
+Algorithm (DFS-based):
+1. Initialize `visited` array/set and an empty stack `resultStack`.
+2. For each vertex `u`: if `u` is not visited, call `dfs_topo(u)`.
+`dfs_topo(u)`:
+  Mark `u` as visited (and add to recursion stack for cycle detection).
+  For each neighbor `v` of `u`:
+    If `v` is not visited: `dfs_topo(v)`.
+    If `v` is in recursion stack: Cycle detected! (Stop)
+  Remove `u` from recursion stack.
+  Push `u` onto `resultStack`.
+3. The final sorted order is obtained by popping elements from `resultStack`.
+
+Example Trace:
+Assume we start DFS from vertices 0,1,2,3,4,5 if not visited.
+
+Suppose we call dfs_topo(5):
+- dfs_topo(5): visited={5}, recStack={5}
+  - Neighbor 2: Not visited. dfs_topo(2)
+    - dfs_topo(2): visited={5,2}, recStack={5,2}
+      - Neighbor 3: Not visited. dfs_topo(3)
+        - dfs_topo(3): visited={5,2,3}, recStack={5,2,3}
+          - Neighbor 1: Not visited. dfs_topo(1)
+            - dfs_topo(1): visited={5,2,3,1}, recStack={5,2,3,1}
+              (No outgoing edges from 1)
+            - Push 1 to stack. resultStack=[1]. recStack={5,2,3}
+          - Push 3 to stack. resultStack=[1,3]. recStack={5,2}
+        - Push 2 to stack. resultStack=[1,3,2]. recStack={5}
+  - Neighbor 0: Not visited. dfs_topo(0)
+    - dfs_topo(0): visited={5,2,3,1,0}, recStack={5,0}
+      (No outgoing edges from 0)
+    - Push 0 to stack. resultStack=[1,3,2,0]. recStack={5}
+  - Push 5 to stack. resultStack=[1,3,2,0,5]. recStack={}
+
+Next, consider vertex 4 (if not visited by previous calls, e.g. if graph was disconnected or iteration order):
+dfs_topo(4): (assuming 4 is not yet visited)
+- dfs_topo(4): visited={...,4}, recStack={4}
+  - Neighbor 0: Visited.
+  - Neighbor 1: Visited.
+  - Push 4 to stack. resultStack=[1,3,2,0,5,4]. recStack={}
+
+Final stack (top to bottom): [4, 5, 0, 2, 3, 1]
+Popping gives topological sort: 4, 5, 0, 2, 3, 1 (or 5, 4, 2, 0, 3, 1 if 5 was processed first then 4)
+Another possible order: 5, 4, 2, 0, 3, 1.
+Or if starting points differ: 4, 5, 2, 0, 3, 1.
+
+Let's verify 5 -> 2, 5 -> 0, 4 -> 0, 4 -> 1, 2 -> 3, 3 -> 1
+Sort: [5, 4, 2, 0, 3, 1] (example output)
+- 5 before 2 (ok)
+- 5 before 0 (ok)
+- 4 before 0 (ok)
+- 4 before 1 (ok)
+- 2 before 3 (ok)
+- 3 before 1 (ok)
+This order is valid.
+                </code></pre>
+            </div>
+
+        </div> <!-- End Section: Trees & Graphs -->
+
+        <div class="section" id="heaps-sorting">
+            <h2 class="section-title">Heaps & Sorting</h2>
+
+            <div class="topic">
+                <h3>Heap Sort</h3>
+                <p><strong>Concept:</strong> Heap sort is a comparison-based sorting algorithm that uses a binary heap data structure. It first builds a max-heap (or min-heap) from the input array. Then, it repeatedly extracts the maximum (or minimum) element from the heap (which is the root) and places it at the end of the sorted portion of the array. The heap is then re-heapified after each extraction.</p>
+                <p class="example-title">Test Example (Max-Heap for Ascending Sort):</p>
+                <pre><code>
+Input Array: [4, 10, 3, 5, 1]
+
+1. Build Max-Heap:
+   Start from the last non-leaf node and heapify down.
+   Array: [10, 5, 3, 4, 1] (After heapifying [4,10,3,5,1])
+   Heap structure (conceptually):
+        10
+       /  \
+      5    3
+     / \
+    4   1
+
+2. Sort Phase:
+   Repeat n-1 times:
+   a. Swap root (max element) with the last element of the heap.
+   b. Reduce heap size by 1.
+   c. Heapify the root of the reduced heap.
+
+   Iteration 1:
+     Heap: [10, 5, 3, 4, 1], size=5
+     Swap 10 (arr[0]) with 1 (arr[4]): Array becomes [1, 5, 3, 4, 10]
+     Sorted portion: [10]
+     Reduce heap size to 4. Consider heap part as [1, 5, 3, 4].
+     Heapify root (1):
+          1
+         / \
+        5   3
+       /
+      4
+     Becomes:
+          5
+         / \
+        4   3
+       /
+      1
+     Array (heap part): [5, 4, 3, 1] Full array: [5, 4, 3, 1, 10]
+
+   Iteration 2:
+     Heap: [5, 4, 3, 1], size=4
+     Swap 5 (arr[0]) with 1 (arr[3]): Array becomes [1, 4, 3, 5, 10]
+     Sorted portion: [5, 10]
+     Reduce heap size to 3. Heap part: [1, 4, 3].
+     Heapify root (1):
+          1
+         / \
+        4   3
+     Becomes:
+          4
+         / \
+        1   3
+     Array (heap part): [4, 1, 3] Full array: [4, 1, 3, 5, 10]
+
+   Iteration 3:
+     Heap: [4, 1, 3], size=3
+     Swap 4 (arr[0]) with 3 (arr[2]): Array becomes [3, 1, 4, 5, 10]
+     Sorted portion: [4, 5, 10]
+     Reduce heap size to 2. Heap part: [3, 1].
+     Heapify root (3): (already a heap)
+          3
+         /
+        1
+     Array (heap part): [3, 1] Full array: [3, 1, 4, 5, 10]
+
+   Iteration 4:
+     Heap: [3, 1], size=2
+     Swap 3 (arr[0]) with 1 (arr[1]): Array becomes [1, 3, 4, 5, 10]
+     Sorted portion: [3, 4, 5, 10]
+     Reduce heap size to 1. Heap part: [1]. Heapify (trivial).
+
+Final Sorted Array: [1, 3, 4, 5, 10]
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Binomial Heap</h3>
+                <p><strong>Concept:</strong> A binomial heap is a collection of binomial trees. A binomial tree B<sub>k</sub> has 2<sup>k</sup> nodes, height k, and the root has degree k. Its children are roots of B<sub>k-1</sub>, B<sub>k-2</sub>, ..., B<sub>0</sub>. Binomial heaps support efficient merging (union) operations, which is their primary advantage. Operations like insert, delete minimum, and decrease key are built upon the merge operation.</p>
+                <p><strong>Properties:</strong></p>
+                <ul>
+                    <li>Each binomial tree in the heap satisfies the min-heap property (parent key <= child key).</li>
+                    <li>For any non-negative integer k, there is at most one binomial tree in the heap whose root has degree k. (This is like a binary representation of the number of nodes).</li>
+                </ul>
+                <p class="example-title">Test Example (Conceptual Operations):</p>
+                <pre><code>
+Binomial Tree B0: o (1 node)
+Binomial Tree B1: o
+                  |
+                  o (2 nodes)
+Binomial Tree B2:   o
+                  / |
+                 o  o
+                 |
+                 o (4 nodes)
+
+A binomial heap is a list of roots of B0, B1, B2... (at most one of each).
+Example: Heap with 7 nodes (binary 111 -> B2, B1, B0)
+H1: (B0 tree with root 5)
+    5
+Insert 3:
+  Create B0(3). Merge B0(3) with H1(B0(5)).
+  Assume 3 < 5. Result of merging two B0s is a B1.
+  B1:  3
+       |
+       5
+  H2: (B1 tree with root 3)
+
+Insert 8:
+  Create B0(8). Merge B0(8) with H2(B1(3)). No B0 in H2.
+  H3: B1(3), B0(8)  (List of roots: 3, 8)
+
+Find Min: Scan roots (3, 8). Min is 3.
+
+Merge two heaps (H_a, H_b):
+  Similar to binary addition. Iterate through tree degrees k=0, 1, 2...
+  If only H_a has Bk, add to result.
+  If only H_b has Bk, add to result.
+  If both have Bk, merge them into B(k+1) (link tree with larger root under smaller root).
+  This B(k+1) becomes a "carry" to the next degree.
+
+Example of Merge (Union):
+Heap 1 (5 nodes = 101_binary -> B2, B0):
+  B2 (root 2), B0 (root 10)
+Heap 2 (3 nodes = 011_binary -> B1, B0):
+  B1 (root 4), B0 (root 7)
+
+Merge:
+k=0: H1 has B0(10), H2 has B0(7). Merge B0(10), B0(7) -> B1(7) [10 under 7]. Carry = B1(7).
+k=1: H1 has no B1. H2 has B1(4). Current_carry is B1(7).
+     Merge B1(4) and B1(7) -> B2(4) [7 under 4]. Carry = B2(4).
+k=2: H1 has B2(2). H2 has no B2. Current_carry is B2(4).
+     Merge B2(2) and B2(4) -> B3(2) [4 under 2]. Carry = B3(2).
+k=3: No B3s. Current_carry is B3(2). Add B3(2) to result.
+
+Resulting Heap (8 nodes): B3(2) (roots: 2)
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>K-ary Heap</h3>
+                <p><strong>Concept:</strong> A k-ary heap is a generalization of a binary heap where each node has at most `k` children instead of 2. Like binary heaps, they are complete (or nearly complete) k-ary trees and satisfy the heap property (either max-heap or min-heap).</p>
+                <p><strong>Properties & Trade-offs:</strong></p>
+                <ul>
+                    <li><strong>Height:</strong> Roughly log<sub>k</sub>N, which is shallower than log<sub>2</sub>N for k > 2. This can speed up operations like `deleteMin` or `decreaseKey` if finding children is efficient.</li>
+                    <li><strong>Comparisons:</strong> Heapify operations (sift-down/up) might involve more comparisons at each step (up to k-1 comparisons to find the smallest/largest child).</li>
+                    <li><strong>Array Representation:</strong>
+                        <ul>
+                            <li>Parent of node `i`: `floor((i-1)/k)`</li>
+                            <li>Children of node `i`: `k*i + 1` to `k*i + k`</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p class="example-title">Test Example (3-ary Max-Heap):</p>
+                <pre><code>
+Array: [20, 15, 18, 5, 12, 10, 17, 2, 3, 8]
+k = 3
+
+Conceptual 3-ary tree structure for [20, 15, 18, 5, 12, 10, 17, 2, 3, 8]:
+         20
+       / | \
+     15  18  5
+    / | \ | \ | \
+   12 10 17 2 3 8
+(This array already represents a max 3-ary heap)
+
+Example: Insert 19 into this heap.
+1. Add 19 to the end: [20, 15, 18, 5, 12, 10, 17, 2, 3, 8, 19]. New index is 10.
+2. Sift-up (heapify-up) for element 19 at index 10:
+   Parent of index 10: floor((10-1)/3) = floor(9/3) = 3. Element at index 3 is 5.
+   19 > 5. Swap.
+   Array: [20, 15, 18, 19, 12, 10, 17, 2, 3, 8, 5]. 19 is now at index 3.
+   Parent of index 3: floor((3-1)/3) = floor(2/3) = 0. Element at index 0 is 20.
+   19 < 20. Stop.
+Final heap after insertion: [20, 15, 18, 19, 12, 10, 17, 2, 3, 8, 5] (Oops, 19 should be child of 20).
+Corrected structure after 19 insertion:
+         20
+       / | \
+     15  18  19  (if 19 replaced 5 and 5 went down)
+    / | \ | \
+   12 10 17 5 ...
+
+Example: DeleteMax (extract 20)
+1. Max is 20 (at root, index 0).
+2. Replace root with last element (e.g., 8 from initial example, if size was 10). Array: [8, 15, 18, 5, 12, 10, 17, 2, 3] (last element moved, size reduced).
+3. Sift-down (heapify-down) for element 8 at index 0:
+   Children of index 0: (3*0+1)=1, (3*0+2)=2, (3*0+3)=3.
+   Values: arr[1]=15, arr[2]=18, arr[3]=5.
+   Max child is 18 at index 2.
+   8 < 18. Swap.
+   Array: [18, 15, 8, 5, 12, 10, 17, 2, 3]. 8 is now at index 2.
+   Children of index 2 (value 8): (3*2+1)=7, (3*2+2)=8, (3*2+3)=9 (if exists).
+   Values: arr[7]=2, arr[8]=3. (Assume arr[9] out of bounds or smaller).
+   Max child among existing children is 3 at index 8.
+   8 > 3. Stop. (Or if 17 was a child, it would be swapped).
+   Need to be careful with child indices and heap size.
+
+K-ary heaps are useful when k is chosen to optimize cache performance or reduce heap height significantly.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Winner Tree (and Loser Tree)</h3>
+                <p><strong>Concept:</strong> A winner tree (or tournament tree) is a complete binary tree used in external sorting or merging multiple sorted runs. Each leaf node represents a player or the first element of a sorted run. Each internal node represents the "winner" (e.g., the smaller element in a min-winner tree) of the match between its children. The root of the tree holds the overall winner (e.g., the overall minimum element among all runs).</p>
+                <p>A <strong>loser tree</strong> is similar, but each internal node stores the "loser" of the match, and the overall winner is typically stored separately or is the loser of the match at the root's parent (if structured that way).</p>
+                <p><strong>Usage:</strong> In k-way merge, the winner tree efficiently finds the smallest element among k sorted lists. After the overall winner is outputted, its run provides the next element, and the tree is updated by replaying matches involving the new element.</p>
+                <p class="example-title">Test Example (Min-Winner Tree for 4 sorted runs):</p>
+                <pre><code>
+Runs (sorted lists):
+R1: [10, 20, 30]
+R2: [5, 15, 25]
+R3: [12, 22, 32]
+R4: [8, 18, 28]
+
+Initial elements for leaves: 10 (R1), 5 (R2), 12 (R3), 8 (R4)
+
+Tree Construction (bottom-up):
+Leaves: [10, 5, 12, 8]
+
+Level 1 (matches):
+Node A = winner(10, 5) = 5  (R2 wins)
+Node B = winner(12, 8) = 8  (R4 wins)
+Internal Nodes: [5, 8]
+
+Level 2 (final match):
+Node C = winner(5, 8) = 5   (R2's element is overall winner)
+Root: [5]
+
+Conceptual Winner Tree:
+      5 (Overall Winner from R2)
+     / \
+    5   8
+   / \ / \
+  10 5 12 8 (Original elements from R1, R2, R3, R4)
+
+Operation for k-way merge:
+1. Output the root: 5.
+2. The winner (5) came from R2. Get next element from R2: 15.
+3. Update the tree: Replace 5 (leaf for R2) with 15.
+   Replay matches involving this path:
+   - Leaf level now: [10, 15, 12, 8]
+   - Node A = winner(10, 15) = 10 (R1 wins)
+   - Node C = winner(10, 8) = 8 (R4 wins)
+   New Tree:
+         8 (Overall Winner from R4)
+        / \
+       10  8
+      / \ / \
+     10 15 12 8
+
+4. Output root: 8.
+5. Winner (8) came from R4. Get next from R4: 18.
+6. Update leaf for R4 to 18. Replay matches:
+   - Leaf level: [10, 15, 12, 18]
+   - Node B = winner(12, 18) = 12 (R3 wins)
+   - Node C = winner(10, 12) = 10 (R1 wins)
+   New Tree:
+         10 (Overall Winner from R1)
+        /  \
+       10  12
+      / \  / \
+     10 15 12 18
+And so on.
+
+Loser Tree: Stores loser. Overall winner is known via the tournament structure.
+Often helps in restructuring as the winner of previous match is needed to find the next actual winner.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Sort without extra Space (In-place sorting)</h3>
+                <p><strong>Concept:</strong> In-place sorting algorithms modify the input array directly to produce the sorted output without requiring significant additional memory (typically O(1) or O(log n) auxiliary space for recursion stack, etc.). The "extra space" usually refers to space beyond what's needed to store the input itself.</p>
+                <p><strong>Examples of In-place Sorting Algorithms:</strong></p>
+                <ul>
+                    <li><strong>Bubble Sort:</strong> Swaps adjacent elements if they are in the wrong order. O(1) extra space.</li>
+                    <li><strong>Selection Sort:</strong> Repeatedly finds the minimum element and swaps it into its correct position. O(1) extra space.</li>
+                    <li><strong>Insertion Sort:</strong> Builds the final sorted array one item at a time, inserting each new item into its proper place. O(1) extra space.</li>
+                    <li><strong>Heap Sort:</strong> Uses a heap data structure built within the array itself. O(1) extra space.</li>
+                    <li><strong>Shell Sort:</strong> An improvement over insertion sort, allows exchanges of far items. O(1) extra space.</li>
+                    <li><strong>Quicksort:</strong> Typically O(log n) extra space for the recursion stack. Can be modified (e.g., introspective sort or careful tail recursion) to be more space-efficient but true O(1) is complex. Standard implementations are often considered "in-place" in a broader sense.</li>
+                </ul>
+                <p><strong>Non-In-place Example:</strong></p>
+                <ul>
+                    <li><strong>Merge Sort:</strong> Typically requires O(n) extra space for merging subarrays.</li>
+                    <li><strong>Counting Sort:</strong> Requires O(k) extra space where k is the range of input values.</li>
+                    <li><strong>Radix Sort:</strong> Often uses counting sort as a subroutine, so can require O(n+k) space.</li>
+                </ul>
+                <p class="example-title">Test Example (In-place: Selection Sort):</p>
+                <pre><code>
+Input Array: [64, 25, 12, 22, 11]
+
+Pass 1:
+  Find min in [64, 25, 12, 22, 11] -> min is 11 at index 4.
+  Swap arr[0] (64) with arr[4] (11).
+  Array: [11, 25, 12, 22, 64] (Sorted part: [11])
+
+Pass 2:
+  Find min in [25, 12, 22, 64] (from index 1) -> min is 12 at index 2.
+  Swap arr[1] (25) with arr[2] (12).
+  Array: [11, 12, 25, 22, 64] (Sorted part: [11, 12])
+
+Pass 3:
+  Find min in [25, 22, 64] (from index 2) -> min is 22 at index 3.
+  Swap arr[2] (25) with arr[3] (22).
+  Array: [11, 12, 22, 25, 64] (Sorted part: [11, 12, 22])
+
+Pass 4:
+  Find min in [25, 64] (from index 3) -> min is 25 at index 3.
+  No swap needed as it's already arr[3]. (Or swap with itself)
+  Array: [11, 12, 22, 25, 64] (Sorted part: [11, 12, 22, 25])
+
+Last element (64) is automatically in place.
+Final Sorted Array: [11, 12, 22, 25, 64]
+This used O(1) extra space (for temporary variable during swap and loop counters).
+                </code></pre>
+            </div>
+        </div> <!-- End Section: Heaps & Sorting -->
+
+
+        <div class="section" id="hashing-sets">
+            <h2 class="section-title">Hashing & Sets</h2>
+
+            <div class="topic">
+                <h3>HashMap to TreeMap</h3>
+                <p><strong>Concept:</strong> A HashMap stores key-value pairs without any specific order of keys. A TreeMap also stores key-value pairs but maintains them in sorted order of keys (either natural ordering or by a custom comparator). Converting a HashMap to a TreeMap involves taking all the entries from the HashMap and inserting them into a new TreeMap. The TreeMap will automatically arrange these entries in sorted key order.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+// Assume a language like Java or Python where these structures exist.
+
+// 1. Create and populate a HashMap
+HashMap<String, Integer> hashMap = new HashMap<>();
+hashMap.put("Banana", 3);
+hashMap.put("Apple", 1);
+hashMap.put("Orange", 2);
+hashMap.put("Mango", 4);
+
+// Contents of hashMap (order is not guaranteed, e.g.):
+// {Apple=1, Orange=2, Mango=4, Banana=3} or some other arbitrary order.
+
+// 2. Convert to TreeMap
+// Method 1: Pass HashMap to TreeMap constructor
+TreeMap<String, Integer> treeMap1 = new TreeMap<>(hashMap);
+
+// Method 2: Create an empty TreeMap and use putAll
+TreeMap<String, Integer> treeMap2 = new TreeMap<>();
+treeMap2.putAll(hashMap);
+
+// Contents of treeMap1 (or treeMap2) will be sorted by key:
+// {Apple=1, Banana=3, Mango=4, Orange=2}
+
+// If keys are custom objects, they need to implement Comparable,
+// or a Comparator must be provided to the TreeMap constructor.
+// Example with custom comparator for reverse order:
+// TreeMap<String, Integer> reverseTreeMap = new TreeMap<>(Collections.reverseOrder());
+// reverseTreeMap.putAll(hashMap);
+// Contents: {Orange=2, Mango=4, Banana=3, Apple=1}
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Types of Sets</h3>
+                <p><strong>Concept:</strong> A Set is an abstract data type that stores a collection of unique elements, meaning no duplicates are allowed. The order of elements may or may not be significant depending on the type of set implementation.</p>
+                <p><strong>Common Implementations/Types:</strong></p>
+                <ul>
+                    <li><strong>HashSet (or Hash Set):</strong>
+                        <ul>
+                            <li>Stores elements in a hash table.</li>
+                            <li>Does <strong>not</strong> guarantee any order of elements.</li>
+                            <li>Offers average O(1) time complexity for add, remove, and contains operations.</li>
+                            <li>Requires elements to have consistent `hashCode()` and `equals()` methods.</li>
+                        </ul>
+                    </li>
+                    <li><strong>TreeSet (or Sorted Set / Balanced Tree Set):</strong>
+                        <ul>
+                            <li>Stores elements in a sorted order (natural ordering or using a custom comparator).</li>
+                            <li>Typically implemented using a self-balancing binary search tree (like a Red-Black tree).</li>
+                            <li>Offers O(log n) time complexity for add, remove, and contains operations.</li>
+                            <li>Allows efficient retrieval of elements in order, finding floor/ceiling elements, etc.</li>
+                        </ul>
+                    </li>
+                    <li><strong>LinkedHashSet:</strong>
+                        <ul>
+                            <li>A hybrid of HashSet and LinkedList.</li>
+                            <li>Stores elements in a hash table for O(1) average time performance for basic operations.</li>
+                            <li>Also maintains a linked list of the elements in the order they were inserted.</li>
+                            <li>Iteration order is predictable (insertion order).</li>
+                        </ul>
+                    </li>
+                    <li><strong>EnumSet (in Java):</strong>
+                        <ul>
+                            <li>A specialized Set implementation for use with enum types.</li>
+                            <li>Highly efficient, often implemented as a bit vector.</li>
+                            <li>Elements are stored in their natural enum order.</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p class="example-title">Test Example (Conceptual):</p>
+                <pre><code>
+// Using conceptual set operations
+
+// HashSet Example:
+Set_A = new HashSet()
+Set_A.add(10)
+Set_A.add(20)
+Set_A.add(5)
+Set_A.add(10) // Duplicate, ignored
+// Set_A might contain {5, 10, 20} in any order.
+// Set_A.contains(10) -> true (fast lookup)
+
+// TreeSet Example:
+Set_B = new TreeSet()
+Set_B.add("Banana")
+Set_B.add("Apple")
+Set_B.add("Orange")
+// Set_B will contain {"Apple", "Banana", "Orange"} (sorted order).
+// Set_B.first() -> "Apple"
+// Set_B.last() -> "Orange"
+
+// LinkedHashSet Example:
+Set_C = new LinkedHashSet()
+Set_C.add("Red")
+Set_C.add("Green")
+Set_C.add("Blue")
+Set_C.add("Red") // Duplicate, ignored
+// When iterating Set_C, elements appear in insertion order: "Red", "Green", "Blue".
+// Set_C.contains("Green") -> true (fast lookup)
+                </code></pre>
+            </div>
+        </div> <!-- End Section: Hashing & Sets -->
+
+        <div class="section" id="dp-combinatorics">
+            <h2 class="section-title">Dynamic Programming & Combinatorics</h2>
+
+            <div class="topic">
+                <h3>Distributing items when a person cannot take more than two items of same type</h3>
+                <p><strong>Concept:</strong> This is a combinatorial problem that can often be solved using dynamic programming or generating functions. The problem asks for the number of ways to distribute a certain number of identical items of different types among people (or into bins) with the constraint that no person receives more than a specific limit (e.g., two) of any single type of item. The exact formulation depends on whether items of different types are distinguishable, whether people are distinguishable, and the total number of items of each type available.</p>
+                <p>Let's consider a common variant: Find the number of ways to choose `N` total items, where items are of `K` types, and for each type `i`, we have `count[i]` available items, and we can pick at most 2 items of type `i`.</p>
+                <p class="example-title">Test Example (Using DP):</p>
+                <pre><code>
+Problem: Find the number of ways to form a sum `S` using `k` types of items, where for each type `i`, we can use it 0, 1, or 2 times, and each use contributes `value[i]` to the sum (or simply, each item of type `i` is distinct, and we pick 0, 1 or 2 of them).
+
+More specific variant: Number of ways to pick `N` items in total from `M` types of items, where for each type, we can pick 0, 1, or 2 items.
+Let `dp[i][j]` be the number of ways to pick `j` items using the first `i` types of items.
+
+To calculate `dp[i][j]`:
+We can pick 0 items of type `i`: `dp[i-1][j]` ways.
+We can pick 1 item of type `i`: `dp[i-1][j-1]` ways (if `j >= 1`).
+We can pick 2 items of type `i`: `dp[i-1][j-2]` ways (if `j >= 2`).
+So, `dp[i][j] = dp[i-1][j] + dp[i-1][j-1] + dp[i-1][j-2]`.
+
+Base case: `dp[0][0] = 1` (0 items from 0 types can be chosen in 1 way - pick nothing).
+All other `dp[0][j] = 0`.
+
+Example: Pick N=3 items from M=2 types.
+Types = {Type1, Type2}
+Constraint: Pick 0, 1, or 2 of each type.
+
+dp table (rows: types considered, cols: items picked)
+dp[i][j]
+
+Initialize dp table of size (M+1) x (N+1) with 0s.
+dp[0][0] = 1
+
+Type 1 (i=1):
+  dp[1][0] = dp[0][0] (pick 0 of T1) = 1
+  dp[1][1] = dp[0][1] (pick 0 T1) + dp[0][0] (pick 1 T1) = 0 + 1 = 1
+  dp[1][2] = dp[0][2] (pick 0 T1) + dp[0][1] (pick 1 T1) + dp[0][0] (pick 2 T1) = 0 + 0 + 1 = 1
+  dp[1][3] = dp[0][3] + dp[0][2] + dp[0][1] = 0 + 0 + 0 = 0
+
+Type 2 (i=2):
+  dp[2][0] = dp[1][0] = 1  (ways: (T1=0, T2=0))
+  dp[2][1] = dp[1][1] (0 of T2) + dp[1][0] (1 of T2)
+           = 1 + 1 = 2
+           Ways: (T1=1,T2=0), (T1=0,T2=1)
+  dp[2][2] = dp[1][2] (0 of T2) + dp[1][1] (1 of T2) + dp[1][0] (2 of T2)
+           = 1 + 1 + 1 = 3
+           Ways: (T1=2,T2=0), (T1=1,T2=1), (T1=0,T2=2)
+  dp[2][3] = dp[1][3] (0 of T2) + dp[1][2] (1 of T2) + dp[1][1] (2 of T2)
+           = 0 + 1 + 1 = 2
+           Ways: (T1=1,T2=2), (T1=2,T2=1)
+
+Result for N=3 items from M=2 types: `dp[2][3] = 2`.
+
+Possible combinations for N=3:
+(T1=1, T2=2) - Total 3
+(T1=2, T2=1) - Total 3
+
+This formulation assumes items of the same type are indistinguishable beyond their count, and items of different types are distinguishable.
+The "distributing items to a person" part could mean the "person" is effectively a "bin" for selected items, and the problem is about the composition of items the person receives.
+If multiple people are involved, the problem becomes more complex (e.g., partitioning).
+The above DP is for selecting items for a single collection/person.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Introduction - Basic Fibonacci Problem</h3>
+                <p><strong>Concept:</strong> The Fibonacci sequence is a series of numbers where each number is the sum of the two preceding ones, usually starting with 0 and 1. That is, F(0) = 0, F(1) = 1, and F(n) = F(n-1) + F(n-2) for n > 1. This problem is a classic example used to introduce recursion and dynamic programming.</p>
+                <p><strong>Solutions:</strong></p>
+                <ul>
+                    <li><strong>Recursive:</strong> Direct implementation of the definition. Very inefficient due to re-computation of same subproblems (exponential time).</li>
+                    <li><strong>Dynamic Programming (Memoization - Top-Down):</strong> Store results of subproblems in an array/map to avoid re-computation.</li>
+                    <li><strong>Dynamic Programming (Tabulation - Bottom-Up):</strong> Build up solutions from base cases in an array.</li>
+                    <li><strong>Space-Optimized DP:</strong> Since F(n) only depends on F(n-1) and F(n-2), we only need to store the last two values. O(1) space.</li>
+                    <li><strong>Matrix Exponentiation:</strong> A more advanced technique to calculate F(n) in O(log n) time.</li>
+                    <li><strong>Binet's Formula:</strong> A closed-form mathematical formula. Prone to precision issues with floating-point arithmetic.</li>
+                </ul>
+                <p class="example-title">Test Example (DP - Tabulation):</p>
+                <pre><code>
+Calculate F(n), e.g., F(6)
+Sequence: 0, 1, 1, 2, 3, 5, 8, ...
+F(0)=0, F(1)=1, F(2)=1, F(3)=2, F(4)=3, F(5)=5, F(6)=8
+
+Tabulation approach:
+Input: n = 6
+
+1. Create an array `dp` of size `n+1`.
+   `dp = [?, ?, ?, ?, ?, ?, ?]`
+2. Base cases:
+   `dp[0] = 0`
+   `dp[1] = 1`
+   `dp = [0, 1, ?, ?, ?, ?, ?]`
+3. Fill the table iteratively: `dp[i] = dp[i-1] + dp[i-2]`
+   `dp[2] = dp[1] + dp[0] = 1 + 0 = 1`.  `dp = [0, 1, 1, ?, ?, ?, ?]`
+   `dp[3] = dp[2] + dp[1] = 1 + 1 = 2`.  `dp = [0, 1, 1, 2, ?, ?, ?]`
+   `dp[4] = dp[3] + dp[2] = 2 + 1 = 3`.  `dp = [0, 1, 1, 2, 3, ?, ?]`
+   `dp[5] = dp[4] + dp[3] = 3 + 2 = 5`.  `dp = [0, 1, 1, 2, 3, 5, ?]`
+   `dp[6] = dp[5] + dp[4] = 5 + 3 = 8`.  `dp = [0, 1, 1, 2, 3, 5, 8]`
+
+Result: `dp[6] = 8`. Time complexity: O(n), Space complexity: O(n).
+
+Space-Optimized DP:
+Input: n = 6
+a = 0 (represents F(i-2))
+b = 1 (represents F(i-1))
+If n = 0, return a.
+If n = 1, return b.
+
+For i from 2 to n:
+  c = a + b  (c is F(i))
+  a = b      (update a to be F(i-1) for next iteration)
+  b = c      (update b to be F(i) for next iteration)
+
+i=2: c = 0+1=1. a=1, b=1.
+i=3: c = 1+1=2. a=1, b=2.
+i=4: c = 1+2=3. a=2, b=3.
+i=5: c = 2+3=5. a=3, b=5.
+i=6: c = 3+5=8. a=5, b=8.
+Return b (which is 8). Time: O(n), Space: O(1).
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Longest Common Subsequence (LCS)</h3>
+                <p><strong>Concept:</strong> The Longest Common Subsequence problem is to find the longest subsequence common to two (or more) sequences (strings or arrays). A subsequence is derived from another sequence by deleting zero or more elements without changing the order of the remaining elements.</p>
+                <p><strong>DP Approach:</strong> Let `X` and `Y` be two sequences of lengths `m` and `n` respectively. Let `dp[i][j]` be the length of the LCS of `X[0...i-1]` and `Y[0...j-1]`.</p>
+                <ul>
+                    <li>If `X[i-1] == Y[j-1]`, then `dp[i][j] = 1 + dp[i-1][j-1]`.</li>
+                    <li>If `X[i-1] != Y[j-1]`, then `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`.</li>
+                </ul>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+String X = "AGGTAB" (m=6)
+String Y = "GXTXAYB" (n=7)
+
+LCS should be "GTAB" (length 4).
+
+DP table `dp[m+1][n+1]`:
+Initialize first row and first column to 0.
+
+        ""  G   X   T   X   A   Y   B
+""      0   0   0   0   0   0   0   0
+A       0   0   0   0   0   1   1   1  (X[0]=A. If A==Y[j-1], 1+dp[prev_diag]. Else max(up,left))
+G       0   1   1   1   1   1   1   1
+G       0   1   1   1   1   1   1   1
+T       0   1   1   2   2   2   2   2
+A       0   1   1   2   2   3   3   3
+B       0   1   1   2   2   3   3   4
+
+Let's trace for dp[1][5] (X="A", Y="GXTXA")
+X[0]='A', Y[4]='A'. Match! dp[1][5] = 1 + dp[0][4] = 1+0 = 1.
+
+Trace for dp[4][3] (X="AGGT", Y="GXT")
+X[3]='T', Y[2]='T'. Match! dp[4][3] = 1 + dp[3][2].
+  dp[3][2] for X="AGG", Y="GX": X[2]='G', Y[1]='X'. No match.
+  dp[3][2] = max(dp[2][2], dp[3][1])
+    dp[2][2] for X="AG", Y="GX": X[1]='G', Y[1]='X'. No match.
+    dp[2][2] = max(dp[1][2], dp[2][1])
+      dp[1][2] for X="A", Y="GX": X[0]='A', Y[1]='X'. No match. max(dp[0][2], dp[1][1]) = max(0,0)=0.
+      dp[2][1] for X="AG", Y="G": X[1]='G', Y[0]='G'. Match! 1+dp[1][0] = 1+0=1.
+    dp[2][2] = max(0,1)=1.
+    dp[3][1] for X="AGG", Y="G": X[2]='G', Y[0]='G'. Match! 1+dp[2][0] = 1+0=1.
+  dp[3][2] = max(1,1)=1.
+So, dp[4][3] = 1 + 1 = 2. This corresponds to LCS("AGGT", "GXT") is "GT".
+
+The final result `dp[m][n]` gives the length of the LCS.
+To reconstruct the LCS itself, backtrack from `dp[m][n]` using the choices made.
+
+Length of LCS is `dp[6][7] = 4`.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Longest Increasing Subsequence (LIS)</h3>
+                <p><strong>Concept:</strong> The Longest Increasing Subsequence problem is to find the length of the longest subsequence of a given sequence such that all elements of the subsequence are sorted in increasing order. </p>
+                <p><strong>DP Approach (O(n<sup>2</sup>)):</strong> Let `dp[i]` be the length of the LIS ending at index `i` such that `arr[i]` is the last element of the LIS.</p>
+                <p>`dp[i] = 1 + max(dp[j])` for all `0 <= j < i` where `arr[j] < arr[i]`. If no such `j` exists, `dp[i] = 1`.</p>
+                <p><strong>More Efficient Approach (O(n log n)):</strong> Uses patience sorting idea or binary search. Maintain a tail array `tails[k]` storing the smallest tail of all increasing subsequences of length `k+1`.</p>
+                <p class="example-title">Test Example (O(n<sup>2</sup>) DP):</p>
+                <pre><code>
+Array: [10, 22, 9, 33, 21, 50, 41, 60, 80]
+n = 9
+
+Initialize `dp` array of size `n` with all 1s. (LIS ending at index i is at least 1 - the element itself)
+dp = [1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+i = 0 (arr[0]=10): dp[0] = 1
+i = 1 (arr[1]=22):
+  j = 0: arr[0]=10 < arr[1]=22. dp[1] = max(dp[1], 1 + dp[0]) = max(1, 1+1=2) = 2.
+  dp = [1, 2, 1, 1, 1, 1, 1, 1, 1]
+i = 2 (arr[2]=9):
+  j = 0: arr[0]=10 not < arr[2]=9.
+  j = 1: arr[1]=22 not < arr[2]=9.
+  dp[2] remains 1.
+  dp = [1, 2, 1, 1, 1, 1, 1, 1, 1]
+i = 3 (arr[3]=33):
+  j = 0: arr[0]=10 < 33. dp[3] = max(1, 1+dp[0]=2) = 2.
+  j = 1: arr[1]=22 < 33. dp[3] = max(2, 1+dp[1]=3) = 3.
+  j = 2: arr[2]=9 < 33. dp[3] = max(3, 1+dp[2]=2) = 3.
+  dp = [1, 2, 1, 3, 1, 1, 1, 1, 1]
+i = 4 (arr[4]=21):
+  j = 0: arr[0]=10 < 21. dp[4] = max(1, 1+dp[0]=2) = 2.
+  j = 1: arr[1]=22 not < 21.
+  j = 2: arr[2]=9 < 21. dp[4] = max(2, 1+dp[2]=2) = 2.
+  j = 3: arr[3]=33 not < 21.
+  dp = [1, 2, 1, 3, 2, 1, 1, 1, 1]
+...and so on.
+
+After filling dp table:
+arr: [10, 22, 9, 33, 21, 50, 41, 60, 80]
+dp:  [ 1,  2, 1,  3,  2,  4,  3,  5,  6] (Example values, trace carefully)
+   Let's re-trace for dp[4]=21:
+   dp[4] (for 21):
+    arr[0]=10 < 21: 1+dp[0] = 1+1=2. max_val = 1. current_dp[4]=2.
+    arr[2]=9  < 21: 1+dp[2] = 1+1=2. current_dp[4]=2.
+   So dp[4]=2 is correct for LIS ending with 21 (e.g., [10,21] or [9,21]).
+
+   dp[5] (for 50):
+    arr[0]=10 < 50: 1+dp[0]=2. dp[5]=2.
+    arr[1]=22 < 50: 1+dp[1]=3. dp[5]=3.
+    arr[2]=9  < 50: 1+dp[2]=2. dp[5]=3.
+    arr[3]=33 < 50: 1+dp[3]=4. dp[5]=4. (e.g., 10,22,33,50)
+    arr[4]=21 < 50: 1+dp[4]=3. dp[5]=4.
+   dp[5]=4.
+
+The maximum value in the `dp` array is the length of the LIS.
+Max(dp) = 6.
+Example LIS: [10, 22, 33, 50, 60, 80] or [10, 22, 33, 41, 60, 80] etc.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Longest Bitonic Subsequence</h3>
+                <p><strong>Concept:</strong> A bitonic subsequence is one that first strictly increases and then strictly decreases. The Longest Bitonic Subsequence (LBS) problem is to find the length of the longest such subsequence in a given sequence. It can be solved by combining LIS (Longest Increasing Subsequence) and LDS (Longest Decreasing Subsequence) concepts.</p>
+                <p><strong>DP Approach:</strong></p>
+                <ol>
+                    <li>Calculate `lis[i]`: Length of the LIS ending at index `i`.</li>
+                    <li>Calculate `lds[i]`: Length of the LDS starting at index `i` (this is equivalent to LIS on the reversed array ending at `n-1-i`). Or, length of LDS ending at `i` by looking at elements `arr[j]` where `j > i` and `arr[j] < arr[i]`.
+                    Let's use a clearer LDS definition: `lds[i]` = length of the longest decreasing subsequence ending at index `i`, considering elements `arr[j]` where `j < i` and `arr[j] > arr[i]`.</li>
+                </ol>
+                <p>Alternative:
+                `lis[i]` = LIS ending at `i` (elements from left to right).
+                `lds[i]` = LIS ending at `i` if we consider the array from right to left (this is equivalent to LDS starting at `i` from original array).
+                The length of the bitonic subsequence which has `arr[i]` as its peak is `lis[i] + lds[i] - 1` (subtract 1 because `arr[i]` is counted in both).
+                The maximum of `lis[i] + lds[i] - 1` over all `i` is the answer.</p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Array: [1, 11, 2, 10, 4, 5, 2, 1]
+n = 8
+
+1. Calculate `lis[i]` (LIS ending at i):
+   arr: [ 1, 11,  2, 10,  4,  5,  2,  1]
+   lis: [ 1,  2,  2,  3,  3,  4,  2,  1]
+   (E.g., lis[3]=3 for arr[3]=10: [1,2,10] or [1,4,10] is not possible. [1,2,10]. lis[4]=3 for arr[4]=4: [1,2,4])
+   Let's re-calculate lis carefully:
+   arr: [ 1, 11,  2, 10,  4,  5,  2,  1]
+   dp_lis:
+   10: [1] -> 1
+   22: [10,22] -> 2
+   9: [9] -> 1
+   33: [10,22,33] -> 3
+   21: [10,21] or [9,21] -> 2
+   50: [10,22,33,50] -> 4
+   41: [10,22,33,41] or [10,21,41] -> 4
+   60: [10,22,33,50,60] or [10,22,33,41,60] -> 5
+   lis for [1, 11, 2, 10, 4, 5, 2, 1]:
+   idx 0 (1): [1] -> 1
+   idx 1 (11): [1,11] -> 2
+   idx 2 (2): [1,2] -> 2
+   idx 3 (10): [1,2,10] -> 3
+   idx 4 (4): [1,2,4] -> 3
+   idx 5 (5): [1,2,4,5] -> 4
+   idx 6 (2): [1,2] (arr[6]=2) -> 2
+   idx 7 (1): [1] (arr[7]=1) -> 1
+   lis: [1, 2, 2, 3, 3, 4, 2, 1]
+
+2. Calculate `lds[i]` (LIS ending at i, considering array reversed, then results mapped back).
+   Or, LDS ending at `i` from left-to-right: `lds[i] = 1 + max(lds[j])` for `j < i` and `arr[j] > arr[i]`.
+   arr: [ 1, 11,  2, 10,  4,  5,  2,  1]
+   lds:
+   idx 0 (1): [1] -> 1
+   idx 1 (11): [11] -> 1
+   idx 2 (2): [11,2] -> 2
+   idx 3 (10): [11,10] -> 2
+   idx 4 (4): [11,10,4] or [11,5,4] or [11,4] (Need to be careful: LDS *ending* at i)
+     lds for arr[i]=4: arr[1]=11>4 -> 1+lds[1]=1+1=2. arr[3]=10>4 -> 1+lds[3]=1+2=3. So lds[4]=3 ([11,10,4])
+   idx 5 (5): [11,10,5] or [11,5]. lds[1]=1 (for 11), lds[3]=2 (for 10).
+     arr[1]=11>5 -> 1+lds[1]=2. arr[3]=10>5 -> 1+lds[3]=1+2=3. So lds[5]=3 ([11,10,5])
+   idx 6 (2): [11,10,4,2] or [11,10,5,2] or [11,2]
+     arr[1]=11>2 -> 1+lds[1]=2
+     arr[3]=10>2 -> 1+lds[3]=3
+     arr[4]=4>2  -> 1+lds[4]=1+3=4 ([11,10,4,2])
+     arr[5]=5>2  -> 1+lds[5]=1+3=4 ([11,10,5,2])
+     So lds[6]=4
+   idx 7 (1): [11,10,4,2,1] or [11,10,5,2,1]
+     arr[1]=11>1 -> 1+lds[1]=2
+     arr[3]=10>1 -> 1+lds[3]=3
+     arr[4]=4>1  -> 1+lds[4]=4
+     arr[5]=5>1  -> 1+lds[5]=4
+     arr[6]=2>1  -> 1+lds[6]=1+4=5 ([11,10,5,2,1] or [11,10,4,2,1])
+     So lds[7]=5
+
+   lds: [1, 1, 2, 2, 3, 3, 4, 5] (This seems to be for the example from GeeksForGeeks [1, 11, 2, 10, 4, 5, 2, 1])
+   Their LIS: [1, 2, 2, 3, 3, 4, 2, 1]
+   Their LDS (from right to left LIS): [1, 5, 2, 4, 3, 3, 2, 1] (LDS *starting* at i)
+   Let's use LIS from left and LIS from right (LDS starting at i).
+   LIS_left (same as lis above): [1, 2, 2, 3, 3, 4, 2, 1]
+   LIS_right (LIS on reversed array, then results reversed):
+     Reversed arr: [1, 2, 5, 4, 10, 2, 11, 1]
+     LIS for rev_arr:
+       1: [1] -> 1
+       2: [1,2] -> 2
+       5: [1,2,5] -> 3
+       4: [1,2,4] -> 3
+       10: [1,2,5,10] or [1,2,4,10] -> 4
+       2: [1,2] (ends at rev_arr[5]=2) -> 2
+       11: [1,2,5,10,11] or [1,2,4,10,11] -> 5
+       1: [1] (ends at rev_arr[7]=1) -> 1
+     LIS_rev_arr: [1, 2, 3, 3, 4, 2, 5, 1]
+     LIS_right (lds_starting_at_i for original): [1, 5, 2, 4, 3, 3, 2, 1] (reversed LIS_rev_arr)
+
+3. Calculate `lis[i] + LIS_right[i] - 1` for each `i`:
+   i=0: 1+1-1=1
+   i=1: 2+5-1=6   (Peak 11: e.g. [1,11] decreasing [11,2,1] -> [1,11,2,1])
+   i=2: 2+2-1=3
+   i=3: 3+4-1=6   (Peak 10: e.g. [1,2,10] decreasing [10,4,2,1] -> [1,2,10,4,2,1])
+   i=4: 3+3-1=5
+   i=5: 4+3-1=6   (Peak 5: e.g. [1,2,4,5] decreasing [5,2,1] -> [1,2,4,5,2,1])
+   i=6: 2+2-1=3
+   i=7: 1+1-1=1
+
+Max value is 6.
+Example LBS: [1, 2, 10, 4, 2, 1] (length 6, peak 10) or [1, 11, 10, 4, 2, 1] (No, 11->10 is ok)
+   [1, (increasing part ends at 11)] + [(decreasing part starts at 11), 2, 1] -> [1, 11, 2, 1] length 4. (lis[1]=2, lds_start[1]=5, 2+5-1=6)
+   Bitonic sequence: [1, 2, 4, 5, 2, 1] (length 6) peak 5
+   Another example LBS is [1,2,10,5,2,1] or [1,2,10,4,2,1] using 10 as peak.
+   [1,11] + [11,10,4,2,1] gives bitonic [1,11,10,4,2,1] length 6.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Longest Palindromic Subsequence (LPS)</h3>
+                <p><strong>Concept:</strong> A palindromic subsequence is a subsequence of a given sequence that reads the same forwards and backwards. The Longest Palindromic Subsequence problem is to find the length of the longest such subsequence.</p>
+                <p><strong>DP Approach:</strong> This problem can be reduced to finding the Longest Common Subsequence (LCS) between the given sequence and its reverse. The LCS of a string and its reverse will always be a palindromic subsequence, and it will be the longest one.</p>
+                <p>Alternatively, a direct DP solution: Let `dp[i][j]` be the length of the LPS of the substring `str[i...j]`.
+                <ul>
+                    <li>If `str[i] == str[j]`:
+                        <ul>
+                            <li>If `i == j` (single character): `dp[i][j] = 1`.</li>
+                            <li>If `i+1 == j` (two same characters): `dp[i][j] = 2`.</li>
+                            <li>Else: `dp[i][j] = 2 + dp[i+1][j-1]`.</li>
+                        </ul>
+                    </li>
+                    <li>If `str[i] != str[j]`: `dp[i][j] = max(dp[i+1][j], dp[i][j-1])`.</li>
+                </ul>
+                The table is filled for increasing lengths of substrings.
+                </p>
+                <p class="example-title">Test Example (Using LCS of String and its Reverse):</p>
+                <pre><code>
+String S = "BBABCBCAB"
+Reverse of S (S_rev) = "BACBCBABB"
+
+Now find LCS(S, S_rev).
+S      = B B A B C B C A B
+S_rev  = B A C B C B A B B
+
+Using the LCS DP table method:
+dp[i][j] = LCS length of S[0...i-1] and S_rev[0...j-1]
+
+Expected LPS for "BBABCBCAB" is "BABCBAB" or "BBCBABB" etc. Length 7.
+"BABCBAB" is a palindrome. Subsequence: B_A_BCB_A_B.
+"BBCBABB" is a palindrome. Subsequence: BB_CBC_ABB.
+
+Let's try "GEEKSFORGEEKS"
+S = "GEEKSFORGEEKS"
+S_rev = "SKEEGROFSKEEG"
+LCS(S, S_rev) would give the length of LPS.
+One LPS is "EEKEE" or "EESEE" or "SKS" etc.
+"GEEKSFORGEEKS" -> LPS could be "EEKEE", "EESEE", "SKS" ...
+LPS "EEKEE" length 5.
+LPS "SKEEGROFSKEEG" => EEKEE (from S), SKE...EKS (from S) => "EEKEE" is common.
+The LPS is "EKE", "EEE", "S S", "EEKEE" (length 5)
+
+Let's use the direct DP for "BBABCBCAB":
+String str = "BBABCBCAB", n = 9
+dp table dp[n][n]
+
+Fill for length 1: dp[i][i] = 1
+dp[0][0]=1 (B), dp[1][1]=1 (B), ..., dp[8][8]=1 (B)
+
+Fill for length 2:
+dp[0][1] (BB): str[0]==str[1] => 2
+dp[1][2] (BA): str[1]!=str[2] => max(dp[1][1], dp[2][2]) = max(1,1) = 1
+...
+
+Fill for length `L` from 1 to `n`.
+For `L` from 1 to `n`:
+  For `i` from 0 to `n-L`:
+    `j = i + L - 1`
+    If `L == 1`: `dp[i][j] = 1`
+    Else if `str[i] == str[j]`: `dp[i][j] = 2 + (if L==2 then 0 else dp[i+1][j-1])`
+    Else (`str[i] != str[j]`): `dp[i][j] = max(dp[i+1][j], dp[i][j-1])`
+
+Result is `dp[0][n-1]`.
+
+For S = "agbcba"
+LPS is "abcba" (len 5) or "abg_c_ba" -> "abccba" is not subsequence.
+LCS("agbcba", "abcbga")
+  agbcba
+  abcbga
+LCS: "abcba" length 5.
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Subset Sum Problem</h3>
+                <p><strong>Concept:</strong> The Subset Sum Problem asks whether there is a non-empty subset of a given set of non-negative integers whose sum equals a given target sum. It's a classic NP-complete problem. A pseudo-polynomial time solution using dynamic programming exists.</p>
+                <p><strong>DP Approach:</strong> Let `dp[i][j]` be a boolean value indicating whether a sum `j` can be achieved using a subset of the first `i` elements of the set.</p>
+                <ul>
+                    <li>`dp[i][j] = dp[i-1][j]` (we don't include the `i`-th element)</li>
+                    <li>OR `dp[i-1][j - set[i-1]]` (we include the `i`-th element, if `j >= set[i-1]`)</li>
+                </ul>
+                <p>Base cases:
+                <ul>
+                    <li>`dp[0][0] = true` (sum 0 is possible with an empty set from 0 elements).</li>
+                    <li>`dp[i][0] = true` for all `i` (sum 0 is always possible by picking no elements).</li>
+                    <li>`dp[0][j] = false` for `j > 0` (non-zero sum not possible with 0 elements).</li>
+                </ul>
+                </p>
+                <p class="example-title">Test Example:</p>
+                <pre><code>
+Set = {3, 34, 4, 12, 5, 2}
+Target Sum (S) = 9
+
+DP table `dp[n+1][S+1]`, where `n` is size of set.
+n=6, S=9. dp table size (7x10).
+
+Initialize:
+dp[0][0] = true. All dp[0][j>0] = false. All dp[i][0] = true.
+
+        Sum:0   1   2   3   4   5   6   7   8   9
+Set Elems
+(i=0) Empty T   F   F   F   F   F   F   F   F   F
+(i=1) {3}   T   F   F   T   F   F   T   F   F   T (if 3+3+3 possible)
+  Let's trace carefully:
+  dp[i][j] means "is sum `j` possible using first `i` elements?"
+  set[i-1] is the current element considered.
+
+Set: arr = [3, 34, 4, 12, 5, 2] (using 0-indexed for arr)
+
+dp[i][s] = dp[i-1][s] || (s >= arr[i-1] && dp[i-1][s - arr[i-1]])
+
+Row 0 (no elements):
+  dp[0][0]=T, dp[0][1..9]=F
+
+Row 1 (element arr[0]=3):
+  dp[1][0]=T
+  dp[1][1]=dp[0][1] || (1>=3 && dp[0][-2]) = F
+  dp[1][2]=dp[0][2] || (2>=3 && dp[0][-1]) = F
+  dp[1][3]=dp[0][3] || (3>=3 && dp[0][0]) = F || (T && T) = T
+  dp[1][4..9] = F (since only 3 is available)
+
+Row 2 (elements {3, 34}, current arr[1]=34):
+  dp[2][s] = dp[1][s] || (s >= 34 && dp[1][s - 34])
+  dp[2][0]=T, dp[2][1]=F, dp[2][2]=F, dp[2][3]=T
+  (For s < 34, dp[2][s] = dp[1][s])
+  dp[2][34] = dp[1][34] || (34>=34 && dp[1][0]) = F || T = T
+  ...
+
+This process continues.
+Let's fill for the target sum 9:
+
+  j=0 1 2 3 4 5 6 7 8 9
+i=0(Ø)T F F F F F F F F F
+i=1(3)T F F T F F F F F F  (dp[1][3]=T)
+i=2(34)T F F T F F F F F F  (dp[2][3]=T, others same as row 1 up to 33)
+i=3(4)T F F T T F F T F F  (dp[3][3]=T, dp[3][4]=T (from 4), dp[3][7]=T (from 3+4))
+i=4(12)T F F T T F F T F F  (dp[4][3]=T, dp[4][4]=T, dp[4][7]=T. No new sums up to 9. 12 itself, 3+12, 4+12, 7+12 too large)
+i=5(5)T F F T T T T T T T  (dp[5][5]=T, dp[5][3+5=8]=T, dp[5][4+5=9]=T)
+i=6(2)T F T T T T T T T T  (dp[6][2]=T, dp[6][3+2=5]=T, dp[6][4+2=6]=T, dp[6][5+2=7]=T, dp[6][7+2=9]=T)
+
+Final check: dp[n][S] which is dp[6][9].
+From trace:
+...
+For i=5 (element 5):
+  dp[5][0..2] same as dp[4][0..2]
+  dp[5][3] = dp[4][3] (T) || (3>=5 && ...) = T
+  dp[5][4] = dp[4][4] (T) || (4>=5 && ...) = T
+  dp[5][5] = dp[4][5] (F) || (5>=5 && dp[4][0]=T) = T
+  dp[5][6] = dp[4][6] (F) || (6>=5 && dp[4][1]=F) = F
+  dp[5][7] = dp[4][7] (T) || (7>=5 && dp[4][2]=F) = T
+  dp[5][8] = dp[4][8] (F) || (8>=5 && dp[4][3]=T) = T
+  dp[5][9] = dp[4][9] (F) || (9>=5 && dp[4][4]=T) = T  -> (Subset {4,5} or {3,?,5} no, {4,5} works. Sum 9 is possible)
+
+For i=6 (element 2): arr[5]=2
+  dp[6][9] = dp[5][9] (T) || (9>=2 && dp[5][7]=T)
+           = T || (T && T) = T.
+
+So, dp[6][9] is True. A subset with sum 9 exists.
+Example subsets for sum 9: {4, 5} or {3, 4, 2} (no, 3+4+2=9) - {3,4,2} not possible from {3,34,4}.
+Wait, arr is 0-indexed. set[i-1] means `arr[i-1]`.
+{3, 34, 4, 12, 5, 2}
+Subsets for 9:
+{4, 5} -> Yes
+{3, 4, 2} -> from {3}, {4}, {2} -> 3+4+2=9 Yes.
+
+The DP table correctly indicates if a sum is possible.
+To find the subset itself, backtrack through the table.
+                </code></pre>
+            </div>
+        </div> <!-- End Section: DP & Combinatorics -->
+
+    </div> <!-- End Container -->
+</body>
+</html>

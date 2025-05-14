@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STS QUICKVIEW</title>
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        .container {
+            width: 90%; /* Increased width for better code display */
+            margin: auto;
+            overflow: hidden;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #569cd6;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #569cd6;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #252526;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .section-title {
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .topic {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            /* border-bottom: 1px dashed #383838; */ /* Removed bottom border for cleaner look between code blocks */
+        }
+        .topic:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .topic h3 {
+            color: #9cdcfe;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-family: 'Consolas', 'Courier New', monospace; /* Monospace for filenames too */
+        }
+        p { /* Not expecting much text, but just in case */
+            margin-bottom: 10px;
+        }
+        pre {
+            background-color: #1a1a1a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto; /* Crucial for long lines of code */
+            border: 1px solid #333;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+            white-space: pre; /* Preserve whitespace and line breaks from code */
+        }
+        code {
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #dcdcaa; /* A common color for code text in dark themes */
+            font-size: 0.9em; /* Slightly smaller font for code */
+            display: block; /* Ensure code block takes up pre width */
+            text-align: left; /* Ensure code is left-aligned */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>My Important Java Code Snippets</h1>
+
+        <div class="section" id="code-snippets">
+            <h2 class="section-title">Java Implementations</h2>
+
+            <div class="topic">
+                <h3>StackPermutation.java</h3>
+                <pre><code>
+import java.util.*;
+
+public class StackPermutation {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        Stack<Integer>  st = new Stack<Integer>();
+
+        int size = sc.nextInt();
+
+        int[] input = new int[size];
+        int[] output = new int[size];
+
+        for(int i = 0; i < size; i++){
+            int elem = sc.nextInt();
+            input[i] = elem;
+        }
+        for(int i = 0; i < size; i++){
+            int elem = sc.nextInt();
+            output[i] = elem;
+        }
+
+        int j = 0;
+
+        for(int i = 0; i < size; i++){
+            
+            st.push(input[i]);
+
+            if(st.peek() == output[j]){
+                while((!st.isEmpty()) && (st.peek() == output[j])){
+                    st.pop();
+                    j++;
+                }
+            }
+
+            
+        }
+
+        System.out.println(st.isEmpty());
+
+        sc.close();
+    }
+    
+    
+}
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>ToweOfHanoi.java</h3>
+                <pre><code>
+import java.util.Scanner;
+
+public class ToweOfHanoi {
+    
+    public static void toh(int n, char from, char to, char aux){
+        if(n == 0) return;
+        toh(n - 1, from, aux, to);
+        System.out.println("Move " + n + " from " + from + " to " + to);
+        toh(n - 1, aux, to, from);
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        int n = sc.nextInt();
+        
+        toh(n,'A','B', 'C');
+
+        sc.close();
+    }
+}
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>BST.java</h3>
+                <pre><code>
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Scanner;
+import java.util.TreeMap;
+
+class Node{
+    int data;
+    Node left;
+    Node right;
+
+    Node(){
+        this.data = 0;
+        this.left = null;
+        this.right = null;
+    }
+
+    Node(int data){
+        this.data = data;
+        this.left = null;
+        this.right = null;
+    }
+}
+
+class Pair {
+    Node node;
+    int x;
+
+    Pair(Node node, int x) {
+        this.node = node;
+        this.x = x;
+    }
+}
+
+public class BST {
+    
+    public static Node insert(Node root, int data){
+        if(root == null){
+            return new Node(data);
+        }else if(data < root.data){
+            root.left = insert(root.left, data);
+        }else{
+            root.right = insert(root.right, data);
+        }
+
+        return root;
+    }
+
+    public static void inorder(Node root){
+        if(root == null) return;
+        inorder(root.left);
+        System.out.print(root.data + " ");
+        inorder(root.right);
+    }
+    public static void postorder(Node root){
+        if(root == null) return;
+        postorder(root.left);
+        postorder(root.right);
+        System.out.print(root.data + " ");
+    }
+    public static void preorder(Node root){
+        if(root == null) return;
+        System.out.print(root.data + " ");
+        preorder(root.left);
+        preorder(root.right);
+        
+    }
+
+    public static List<List<Integer>> levelorder(Node root){
+        List<List<Integer>> result = new ArrayList<>();
+        if(root == null) return result;
+
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            int levelsize = queue.size();
+            List<Integer> currentLevel = new ArrayList<>();
+
+            for(int i = 0; i < levelsize; i++){
+                Node curr = queue.poll();
+                currentLevel.add(curr.data);
+
+                if(curr.left != null) queue.add(curr.left);
+                if(curr.right != null) queue.add(curr.right);
+            }
+
+            result.add(currentLevel);
+        }
+
+
+        return result;
+
+    }
+
+    public static List<List<Integer>> levelorderCompleted(Node root){
+        List<List<Integer>> result = new ArrayList<>();
+        if(root == null) return result;
+
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+
+        while (!queue.isEmpty()) {
+            int levelsize = queue.size();
+            List<Integer> currentLevel = new ArrayList<>();
+
+            for(int i = 0; i < levelsize; i++){
+                Node curr = queue.poll();
+                if(curr != null){
+                    currentLevel.add(curr.data);
+                    queue.add(curr.left);
+                    queue.add(curr.right);
+                }else{
+                    currentLevel.add(-1);
+                    queue.add(null);
+                    queue.add(null);
+                }
+            }
+
+            boolean allNull = true;
+            for(Integer i : currentLevel){
+                if(i != -1){
+                    allNull = false;
+                    break;
+                }
+            }
+
+            if(allNull) break;
+
+            result.add(currentLevel);
+        }
+
+
+        return result;
+
+    }
+
+    public static List<List<Integer>> verticalorder(Node root) {
+        List<List<Integer>> result = new ArrayList<>();
+        if (root == null) return result;
+
+        TreeMap<Integer, List<Integer>> xMap = new TreeMap<>();
+
+        Queue<Pair> queue = new LinkedList<>();
+        queue.add(new Pair(root, 0));
+
+        while (!queue.isEmpty()) {
+            Pair current = queue.poll();
+            Node node = current.node;
+            int x = current.x;
+
+            xMap.putIfAbsent(x, new ArrayList<>());
+            xMap.get(x).add(node.data);
+
+            if (node.left != null) queue.add(new Pair(node.left, x - 1));
+            if (node.right != null) queue.add(new Pair(node.right, x + 1));
+        }
+
+
+        for (List<Integer> column : xMap.values()) {
+            result.add(column);
+        }
+
+        return result;
+    }
+
+    public static void print2D(List<List<Integer>> list){
+        System.out.print("[");
+        for(int i = 0; i < list.size() - 1; i++){
+            System.out.print(list.get(i).toString() + ", "); 
+        }
+        System.out.println(list.get(list.size() - 1).toString() + "]");
+    }
+    
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        Node root = null;
+        int n = sc.nextInt();
+
+        for (int i = 0; i < n; i++) {
+            int val = sc.nextInt();
+            root = insert(root, val);
+        }
+
+        System.out.print("Inorder: ");
+        inorder(root);
+        System.out.println();
+
+        System.out.print("Postorder: ");
+        postorder(root);
+        System.out.println();
+
+        System.out.print("Preorder: ");
+        preorder(root);
+        System.out.println();
+
+        System.out.print("levelorder: ");
+        print2D(levelorder(root));
+
+        System.out.print("verticalorder: ");
+        print2D(verticalorder(root));
+
+        sc.close();
+    }
+}
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>LCS.java</h3>
+                <pre><code>
+public class LCS {
+    public static String lcsTwoPointer(String s1, String s2) {
+        String result = "";
+    int i = 0, j = 0;
+
+    while (i < s1.length() && j < s2.length()) {
+        if (s1.charAt(i) == s2.charAt(j)) {
+            result += "" + s1.charAt(i);
+            i++;
+            j++;
+        } else {
+            if (i + 1 < s1.length() && s1.charAt(i + 1) == s2.charAt(j)) {
+                i++;
+            } else if (j + 1 < s2.length() && s1.charAt(i) == s2.charAt(j + 1)) {
+                j++;
+            } else {
+                i++;
+                j++;
+            }
+        }
+    }
+
+    return result;
+}
+
+    public static void main(String[] args) {
+        String s1 = "AGGTAB";
+        String s2 = "GXTXAYB";
+
+        String result = lcsTwoPointer(s1, s2);
+        System.out.println("LCS: " + result);
+    }
+}
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>LongestSubsequences.java</h3>
+                <pre><code>
+import java.util.*;
+
+public class LongestSubsequences {
+
+    public static int longestIncreasingSubsequence(List<Integer> arr) {
+        int n = arr.size();
+        if(n == 0) return -1;
+
+        int dp[] = new int[n];
+
+        Arrays.fill(dp,1);
+
+
+        for(int i = 1; i < n; i++){
+            for(int j = 0; j < i; j++){
+                if(arr.get(i) > arr.get(j)){
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+
+        int lis = 0;
+        for(int i : dp){
+            lis = Math.max(i, lis);
+        }
+
+        return lis;
+
+    }
+
+
+    public static int longestDecreasingSubsequence(List<Integer> arr) {
+        int n = arr.size();
+        if(n == 0) return -1;
+
+        int dp[] = new int[n];
+
+        Arrays.fill(dp, 1);
+
+        for(int i = 1; i < n; i++){
+            for(int j = 0; j < i; j++){
+                if(arr.get(i) < arr.get(j)){
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+
+        int lds = 0;
+        for(int i : dp){
+            lds = Math.max(i, lds);
+        }
+
+        return lds;
+    }
+
+    
+    public static int longestBitonicSubsequence(List<Integer> arr) {
+        int lds = longestIncreasingSubsequence(arr); // This should be LIS for the first part
+        int lis = longestIncreasingSubsequence(arr); // This should be LDS (or LIS on reversed for second part)
+        // The original code reuses LIS calculation for both.
+        // As per "don't change the code", this is kept.
+        // A correct LBS typically involves an LIS and an LDS (or LIS on reversed).
+        
+        return lds + lis - 1; // This formula assumes lds and lis are correctly calculated for bitonic logic
+    }
+
+    public static void main(String[] args) {
+        List<Integer> arr = Arrays.asList(1, 2, 3, 4, 3, 2, 1);
+        
+        int lis = longestIncreasingSubsequence(arr);
+        System.out.println("Longest Increasing Subsequence (LIS): " + lis);
+
+        int lds = longestDecreasingSubsequence(arr);
+        System.out.println("Longest Decreasing Subsequence (LDS): " + lds);
+
+        int lbs = longestBitonicSubsequence(arr);
+        System.out.println("Longest Bitonic Subsequence (LBS): " + lbs);
+    }
+}
+                </code></pre>
+            </div>
+
+            <div class="topic">
+                <h3>Fibonacci.java</h3>
+                <pre><code>
+import java.util.Arrays;
+
+public class Fibonacci {
+    static int getTerm(int n){
+        double term = (1 / Math.sqrt(5)) * (Math.pow(((1 + Math.sqrt(5)) / 2), n) - Math.pow(((1 - Math.sqrt(5)) / 2), n));
+
+        return (int)term;
+    }
+    static int[] getSeq(int n){
+        int[] seq = new int[n];
+        for(int i = 0; i < n; i++){
+            seq[i] = getTerm(i);
+        }
+
+        return seq;
+    }
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(getSeq(10)));
+    }
+}
+                </code></pre>
+            </div>
+
+        </div> <!-- End Section: Code Snippets -->
+
+    </div> <!-- End Container -->
+</body>
+</html>
